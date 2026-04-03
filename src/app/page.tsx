@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const GREEN = "#00d4ff";
 const CYAN = "#00e5ff";
-const DIM = "rgba(0,180,255,0.175)";
+const DIM = "rgba(0,180,255,0.5)";
 
 // Eye reference center (for offset calculation)
 const refCenter = { x: 120.32, y: 93.67 };
@@ -212,7 +212,7 @@ export default function Home() {
       {/* Vignette */}
       <div style={{ position:"absolute", inset:0, pointerEvents:"none", background:"radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.8) 100%)" }} />
       {/* Center glow */}
-      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"min(700px,90vw)", height:400, borderRadius:"50%", background:`radial-gradient(ellipse, rgba(0,180,255,0.028) 0%, transparent 70%)`, pointerEvents:"none" }} />
+      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"min(700px,90vw)", height:400, borderRadius:"50%", background:`radial-gradient(ellipse, rgba(0,180,255,0.06) 0%, transparent 70%)`, pointerEvents:"none" }} />
 
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", gap:0, textAlign:"center", padding:"0 16px", width:"100%" }}>
 
@@ -224,7 +224,7 @@ export default function Home() {
             { label:"UPTIME", value:uptime },
           ].map((item, i) => (
             <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(9px,2vw,11px)", letterSpacing:"0.15em", padding:"4px 10px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
-              <span style={{ color:"rgba(0,180,255,0.125)" }}>{item.label}</span>
+              <span style={{ color:"rgba(0,180,255,0.4)" }}>{item.label}</span>
               <span style={{ color: item.label === "SYS" ? GREEN : DIM }}>{item.value}</span>
               {item.label === "SYS" && <span style={{ color:GREEN, animation:"blink 1s step-end infinite", fontSize:8 }}>●</span>}
             </div>
@@ -345,7 +345,7 @@ export default function Home() {
 
         {/* ── Catchphrase ── */}
         <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:28 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(11px,2.5vw,14px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 20px rgba(0,180,255,0.2)`, margin:0 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(11px,2.5vw,14px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.5)`, margin:0 }}>
             Virtual Oracle Of You
           </p>
         </div>
@@ -355,19 +355,19 @@ export default function Home() {
 
         {/* ── Terminal command line ── */}
         <div style={{ fontFamily:"monospace", fontSize:"clamp(10px,2.5vw,13px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.5s ease both", opacity:0 }}>
-          <span style={{ color:"rgba(0,180,255,0.125)" }}>root@vooy</span>
-          <span style={{ color:"rgba(0,180,255,0.075)" }}>:~$ </span>
+          <span style={{ color:"rgba(0,180,255,0.5)" }}>root@vooy</span>
+          <span style={{ color:"rgba(0,180,255,0.35)" }}>:~$ </span>
           <span style={{ color:GREEN }}>{typed}</span>
           <span style={{ animation:"blink 0.8s step-end infinite", color:GREEN }}>▌</span>
         </div>
 
         {/* ── Mini terminal log ── */}
-        <div style={{ marginTop:28, fontFamily:"monospace", fontSize:"clamp(8px,1.8vw,10px)", color:"rgba(0,180,255,0.11)", letterSpacing:"0.08em", lineHeight:1.9, textAlign:"center", animation:"fadeSlide 1s 0.7s ease both", opacity:0, maxWidth:320, width:"100%" }}>
+        <div style={{ marginTop:28, fontFamily:"monospace", fontSize:"clamp(8px,1.8vw,10px)", color:"rgba(0,180,255,0.35)", letterSpacing:"0.08em", lineHeight:1.9, textAlign:"center", animation:"fadeSlide 1s 0.7s ease both", opacity:0, maxWidth:320, width:"100%" }}>
           {[
             "[OK]  agent runtime initialized",
             "[>>]  autonomous systems online...",
           ].map((line, i) => (
-            <div key={i} style={{ color: i === 1 ? `rgba(79,195,247,0.175)` : "rgba(0,180,255,0.11)" }}>
+            <div key={i} style={{ color: i === 1 ? `rgba(79,195,247,0.45)` : "rgba(0,180,255,0.35)" }}>
               {line}
             </div>
           ))}
