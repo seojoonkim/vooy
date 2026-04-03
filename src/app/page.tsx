@@ -8,7 +8,7 @@ const DIM = "rgba(0,180,255,0.175)";
 
 // Eye reference center (for offset calculation)
 const refCenter = { x: 120.32, y: 93.67 };
-const EYE_MAX_R = 15;
+const EYE_MAX_R = 7;
 
 // Original font paths extracted from vooy-logo-path.svg
 const V_PATH = "M34.0234375 126.25 10.703125 60.7421875H35.4296875L43.92578125 90.625Q45.21484375 95.078125 46.26953125 99.6484375Q47.32421875 104.21875 48.26171875 109.140625Q49.19921875 104.21875 50.224609375 99.677734375Q51.25 95.13671875 52.48046875 90.625L60.7421875 60.7421875H85.1171875L61.6796875 126.25Z";
@@ -22,7 +22,7 @@ const Y_PATH = "M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 1
 // o centers for eye tracking
 const O1_CENTER = { x: 120.32, y: 93.67 };
 const O2_CENTER = { x: 192.32, y: 93.67 };
-const PUPIL_R = 20;
+const PUPIL_R = 18;
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -260,6 +260,18 @@ export default function Home() {
               <clipPath id="o2clip">
                 <path d={O2_OUTER} />
               </clipPath>
+              <filter id="innerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+                <feColorMatrix in="blur" type="matrix"
+                  values="0 0 0 0 0.0
+                          0 0 0 0 0.55
+                          0 0 0 0 1.0
+                          0 0 0 1.8 0" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
             </defs>
             {/* v */}
             <path
@@ -283,6 +295,7 @@ export default function Home() {
                 r={PUPIL_R}
                 fill="#050a0d"
                 clipPath="url(#o1clip)"
+                filter="url(#innerGlow)"
               />
             </g>
             {/* o2 - solid white outer shape (font path) */}
@@ -299,6 +312,7 @@ export default function Home() {
                 r={PUPIL_R}
                 fill="#050a0d"
                 clipPath="url(#o2clip)"
+                filter="url(#innerGlow)"
               />
             </g>
             {/* y */}
