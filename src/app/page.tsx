@@ -97,6 +97,8 @@ export default function Home() {
   useEffect(() => {
     if (!allLit) return;
 
+    const isMobile = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
     let randomTarget = { x: 0, y: 0 };
     let lastRandomChange = 0;
     let rafId = 0;
@@ -112,30 +114,26 @@ export default function Home() {
         const mouseInSvgX = (mousePos.current.x - rect.left) * scaleX;
         const mouseInSvgY = (mousePos.current.y - rect.top) * scaleY;
 
-        // Random target every 2s
-        if (now - lastRandomChange > 2000) {
-          lastRandomChange = now;
-          randomTarget = {
-            x: (Math.random() * 2 - 1) * EYE_MAX_R,
-            y: (Math.random() * 2 - 1) * EYE_MAX_R,
-          };
-        }
-
         const prev = eyeOffsetRef.current;
-        const dist = Math.hypot(mouseInSvgX - refCenter.x, mouseInSvgY - refCenter.y);
-        const isNear = dist < 80;
-
         let targetX: number, targetY: number;
-        if (isNear) {
-          const dx = mouseInSvgX - refCenter.x;
-          const dy = mouseInSvgY - refCenter.y;
-          const angle = Math.atan2(dy, dx);
-          const r = Math.min(dist / 80 * EYE_MAX_R, EYE_MAX_R);
-          targetX = Math.cos(angle) * r;
-          targetY = Math.sin(angle) * r;
-        } else {
+
+        if (isMobile) {
+          // Mobile: random movement every 2.5s
+          if (now - lastRandomChange > 2500) {
+            lastRandomChange = now;
+            randomTarget = {
+              x: (Math.random() * 2 - 1) * EYE_MAX_R,
+              y: (Math.random() * 2 - 1) * EYE_MAX_R,
+            };
+          }
           targetX = randomTarget.x;
           targetY = randomTarget.y;
+        } else {
+          // Desktop: always follow mouse direction
+          const ang = Math.atan2(mouseInSvgY - refCenter.y, mouseInSvgX - refCenter.x);
+          const r = EYE_MAX_R * 0.8;
+          targetX = Math.cos(ang) * r;
+          targetY = Math.sin(ang) * r;
         }
 
         const next = {
@@ -303,8 +301,8 @@ export default function Home() {
                 <path
                   d={O1_INNER}
                   fill="none"
-                  stroke="rgba(255,255,255,0.35)"
-                  strokeWidth="4"
+                  stroke="rgba(255,255,255,0.15)"
+                  strokeWidth="2"
                   transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
                   clipPath="url(#o1hole)"
                   filter="url(#innerGlow)"
@@ -324,8 +322,8 @@ export default function Home() {
                 <path
                   d={O2_INNER}
                   fill="none"
-                  stroke="rgba(255,255,255,0.35)"
-                  strokeWidth="4"
+                  stroke="rgba(255,255,255,0.15)"
+                  strokeWidth="2"
                   transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
                   clipPath="url(#o2hole)"
                   filter="url(#innerGlow)"
