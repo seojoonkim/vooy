@@ -156,9 +156,7 @@ export default function Home() {
                   display:"inline-block",
                   transition:"opacity 0.5s ease, text-shadow 0.7s ease, color 0.5s ease",
                   color: litLetters[i] ? "#fff" : "rgba(255,255,255,0.08)",
-                  textShadow: litLetters[i] && !allLit
-                    ? `0 0 20px rgba(0,180,255,0.6), 0 0 40px rgba(0,180,255,0.3)`
-                    : "none",
+                  textShadow: "none",
                 }}>{ch}</span>
               ))}
             </div>

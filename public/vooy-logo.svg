@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="600" height="200">
+  <defs>
+    <filter id="glow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="outline" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="600" height="200" fill="#050a0d"/>
+  <!-- glow layer -->
+  <text x="50%" y="72%" text-anchor="middle"
+    font-family="Inter, Arial Black, Helvetica Neue, sans-serif"
+    font-weight="900" font-size="148"
+    fill="rgba(0,212,255,0.4)"
+    filter="url(#glow)"
+    style="letter-spacing:-3px">vooy</text>
+  <!-- main text -->
+  <text x="50%" y="72%" text-anchor="middle"
+    font-family="Inter, Arial Black, Helvetica Neue, sans-serif"
+    font-weight="900" font-size="148"
+    fill="white"
+    style="letter-spacing:-3px">vooy</text>
+</svg>
