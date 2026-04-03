@@ -147,14 +147,14 @@ export default function Home() {
               height: "auto",
               display: "block",
               filter: allLit
-                ? "drop-shadow(0 0 12px rgba(0,180,255,0.7)) drop-shadow(0 0 30px rgba(0,180,255,0.4))"
+                ? "drop-shadow(0 0 6px rgba(0,180,255,0.3)) drop-shadow(0 0 12px rgba(0,180,255,0.15))"
                 : "none",
               transition: "filter 1.2s ease",
             }}
           >
             <defs>
               <filter id="letterGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
                 <feMerge>
                   <feMergeNode in="blur"/>
                   <feMergeNode in="blur"/>
