@@ -260,15 +260,10 @@ export default function Home() {
               <clipPath id="o2clip">
                 <path d={O2_OUTER} />
               </clipPath>
-              <filter id="innerGlow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
-                <feColorMatrix in="blur" type="matrix"
-                  values="0 0 0 0 0.0
-                          0 0 0 0 0.55
-                          0 0 0 0 1.0
-                          0 0 0 1.8 0" result="coloredBlur"/>
+              <filter id="innerGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
                 <feMerge>
-                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="blur"/>
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
