@@ -26,7 +26,6 @@ const Y_PATH = "M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 1
 // o centers for eye tracking
 const O1_CENTER = { x: 120.32, y: 93.67 };
 const O2_CENTER = { x: 192.32, y: 93.67 };
-const PUPIL_R = 18;
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -258,19 +257,30 @@ export default function Home() {
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
-              <clipPath id="o1clip">
-                <path d={O1_OUTER} />
-              </clipPath>
-              <clipPath id="o2clip">
-                <path d={O2_OUTER} />
-              </clipPath>
-              <filter id="innerGlow" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+              <filter id="innerGlow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
                 <feMerge>
+                  <feMergeNode in="blur"/>
                   <feMergeNode in="blur"/>
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
+              {/* Masks for transparent holes that move with eye offset */}
+              <mask id="o1mask">
+                <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
+                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
+              </mask>
+              <mask id="o2mask">
+                <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
+                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
+              </mask>
+              {/* Clip paths to constrain inner glow to inside the hole */}
+              <clipPath id="o1hole">
+                <path d={O1_INNER} transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
+              </clipPath>
+              <clipPath id="o2hole">
+                <path d={O2_INNER} transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
+              </clipPath>
             </defs>
             {/* v */}
             <path
@@ -280,37 +290,47 @@ export default function Home() {
               filter={litLetters[0] ? "url(#letterGlow)" : undefined}
               style={{ transition: "fill 0.5s ease" }}
             />
-            {/* o1 - solid white outer shape (font path) */}
+            {/* o1 - outer shape with mask for transparent moving hole */}
             <g filter={litLetters[1] ? "url(#letterGlow)" : undefined}>
               <path
                 d={O1_OUTER}
                 fill={litLetters[1] ? "white" : "rgba(255,255,255,0.08)"}
+                mask="url(#o1mask)"
                 style={{ transition: "fill 0.5s ease" }}
               />
-              {/* o1 - moving dark "hole" (pupil) using font inner path */}
-              <path
-                d={O1_INNER}
-                fill="#050a0d"
-                transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
-                clipPath="url(#o1clip)"
-                filter="url(#innerGlow)"
-              />
+              {/* Inner glow - white stroke clipped to inside the hole */}
+              {litLetters[1] && (
+                <path
+                  d={O1_INNER}
+                  fill="none"
+                  stroke="rgba(255,255,255,0.35)"
+                  strokeWidth="4"
+                  transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
+                  clipPath="url(#o1hole)"
+                  filter="url(#innerGlow)"
+                />
+              )}
             </g>
-            {/* o2 - solid white outer shape (font path) */}
+            {/* o2 - outer shape with mask for transparent moving hole */}
             <g filter={litLetters[2] ? "url(#letterGlow)" : undefined}>
               <path
                 d={O2_OUTER}
                 fill={litLetters[2] ? "white" : "rgba(255,255,255,0.08)"}
+                mask="url(#o2mask)"
                 style={{ transition: "fill 0.5s ease" }}
               />
-              {/* o2 - moving dark "hole" (pupil) using font inner path */}
-              <path
-                d={O2_INNER}
-                fill="#050a0d"
-                transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
-                clipPath="url(#o2clip)"
-                filter="url(#innerGlow)"
-              />
+              {/* Inner glow - white stroke clipped to inside the hole */}
+              {litLetters[2] && (
+                <path
+                  d={O2_INNER}
+                  fill="none"
+                  stroke="rgba(255,255,255,0.35)"
+                  strokeWidth="4"
+                  transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
+                  clipPath="url(#o2hole)"
+                  filter="url(#innerGlow)"
+                />
+              )}
             </g>
             {/* y */}
             <path
