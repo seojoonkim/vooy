@@ -6,12 +6,24 @@ const GREEN = "#00d4ff";
 const CYAN = "#00e5ff";
 const DIM = "rgba(0,180,255,0.35)";
 
+// Eye centers (computed from SVG inner hole bounding boxes)
+const EYE_CENTERS = [
+  { x: 120.32, y: 93.67 }, // first 'o'
+  { x: 192.32, y: 93.67 }, // second 'o'
+];
+const EYE_MAX_R = 7;
+const EYE_PUPIL_R = 5;
+
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [litLetters, setLitLetters] = useState<boolean[]>([false,false,false,false]);
   const [allLit, setAllLit] = useState(false);
   const [typed, setTyped] = useState("");
   const [uptime, setUptime] = useState("00:00:00");
+  const [eyePos, setEyePos] = useState([{ x: 0, y: 0 }, { x: 0, y: 0 }]);
+  const mousePos = useRef({ x: 0, y: 0 });
+  const svgRef = useRef<SVGSVGElement>(null);
+  const eyePosRef = useRef([{ x: 0, y: 0 }, { x: 0, y: 0 }]);
 
   // Typewriter effect for command line
   const CMD = "initialize --mode=agentic --level=autonomous";
@@ -58,6 +70,78 @@ export default function Home() {
     const t = setTimeout(runCycle, 600);
     return () => clearTimeout(t);
   }, []);
+
+  // Mouse tracking
+  useEffect(() => {
+    const handleMouse = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouse);
+    return () => window.removeEventListener('mousemove', handleMouse);
+  }, []);
+
+  // Eye animation
+  useEffect(() => {
+    if (!allLit) return;
+
+    let randomTarget = [{ x: 0, y: 0 }, { x: 0, y: 0 }];
+    let lastRandomChange = 0;
+    let rafId = 0;
+
+    const animate = () => {
+      const now = Date.now();
+      const svg = svgRef.current;
+
+      if (svg) {
+        const rect = svg.getBoundingClientRect();
+        const scaleX = 313.1094 / rect.width;
+        const scaleY = 165.1953 / rect.height;
+        const mouseInSvgX = (mousePos.current.x - rect.left) * scaleX;
+        const mouseInSvgY = (mousePos.current.y - rect.top) * scaleY;
+
+        // Random target every 2s
+        if (now - lastRandomChange > 2000) {
+          lastRandomChange = now;
+          randomTarget = EYE_CENTERS.map(() => ({
+            x: (Math.random() * 2 - 1) * EYE_MAX_R,
+            y: (Math.random() * 2 - 1) * EYE_MAX_R,
+          }));
+        }
+
+        const prev = eyePosRef.current;
+        const next = EYE_CENTERS.map((center, i) => {
+          const dist = Math.hypot(mouseInSvgX - center.x, mouseInSvgY - center.y);
+          const isNear = dist < 80;
+
+          let targetX: number, targetY: number;
+          if (isNear) {
+            const dx = mouseInSvgX - center.x;
+            const dy = mouseInSvgY - center.y;
+            const angle = Math.atan2(dy, dx);
+            const r = Math.min(dist / 80 * EYE_MAX_R, EYE_MAX_R);
+            targetX = Math.cos(angle) * r;
+            targetY = Math.sin(angle) * r;
+          } else {
+            targetX = randomTarget[i].x;
+            targetY = randomTarget[i].y;
+          }
+
+          return {
+            x: (prev[i]?.x ?? 0) * 0.85 + targetX * 0.15,
+            y: (prev[i]?.y ?? 0) * 0.85 + targetY * 0.15,
+          };
+        });
+
+        eyePosRef.current = next;
+        setEyePos(next);
+      }
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
+  }, [allLit]);
 
   // Anti-gravity particle canvas
   useEffect(() => {
@@ -141,6 +225,7 @@ export default function Home() {
         {/* ── LOGO (inline SVG) ── */}
         <div style={{ position:"relative", animation:"fadeSlide 0.8s 0.15s ease both", opacity:0 }}>
           <svg
+            ref={svgRef}
             viewBox="0 0 313.1094 165.1953"
             style={{
               width: "clamp(280px, 65vw, 510px)",
@@ -181,6 +266,27 @@ export default function Home() {
                 style={{ transition: "fill 0.5s ease" }}
               />
             ))}
+            {/* Eyeballs inside the two 'o' letters */}
+            {allLit && (
+              <>
+                <circle
+                  cx={EYE_CENTERS[0].x + eyePos[0].x}
+                  cy={EYE_CENTERS[0].y + eyePos[0].y}
+                  r={EYE_PUPIL_R}
+                  fill={GREEN}
+                  opacity={0.9}
+                  style={{ transition: 'none' }}
+                />
+                <circle
+                  cx={EYE_CENTERS[1].x + eyePos[1].x}
+                  cy={EYE_CENTERS[1].y + eyePos[1].y}
+                  r={EYE_PUPIL_R}
+                  fill={GREEN}
+                  opacity={0.9}
+                  style={{ transition: 'none' }}
+                />
+              </>
+            )}
           </svg>
           {/* Underline */}
           <div style={{ marginTop:6, height:2, background:`linear-gradient(to right, transparent, ${GREEN}, ${CYAN}, transparent)`, borderRadius:2, animation:"underlineGlow 8s ease-in-out infinite" }} />
