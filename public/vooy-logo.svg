@@ -16,7 +16,6 @@
       </feMerge>
     </filter>
   </defs>
-  <rect width="600" height="200" fill="#050a0d"/>
   <!-- glow layer -->
   <text x="50%" y="72%" text-anchor="middle"
     font-family="Inter, Arial Black, Helvetica Neue, sans-serif"
