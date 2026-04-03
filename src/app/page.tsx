@@ -149,43 +149,25 @@ export default function Home() {
         {/* ── LOGO ── */}
         <div style={{ position:"relative", animation:"fadeSlide 0.8s 0.15s ease both", opacity:0 }}>
           <div style={{ position:"relative" }}>
-            {/* Base: individual letter lighting */}
-            <div style={{ fontWeight:900, fontSize:"clamp(106px,22vw,148px)", letterSpacing:"-3px", lineHeight:1, display:"flex", justifyContent:"center", fontFamily:"'Inter', Arial Black, sans-serif" }}>
-              {"vooy".split("").map((ch, i) => (
-                <span key={i} style={{
-                  display:"inline-block",
-                  transition:"opacity 0.5s ease, text-shadow 0.7s ease, color 0.5s ease",
-                  color: litLetters[i] ? "#fff" : "rgba(255,255,255,0.08)",
-                  textShadow: "none",
-                }}>{ch}</span>
-              ))}
+            {/* SVG Logo */}
+            <div style={{ display:"flex", justifyContent:"center", width:"clamp(300px,60vw,600px)" }}>
+              <img
+                src="/vooy-logo.svg"
+                alt="vooy"
+                style={{
+                  width:"100%",
+                  height:"auto",
+                  filter: allLit
+                    ? "brightness(1.3) drop-shadow(0 0 20px rgba(0,180,255,0.8))"
+                    : litLetters.some(Boolean)
+                    ? "brightness(0.9) drop-shadow(0 0 8px rgba(0,180,255,0.4))"
+                    : "brightness(0.15)",
+                  transition:"filter 0.7s ease",
+                }}
+              />
             </div>
-            {/* Overlay: allLit outline */}
-            <div style={{
-              position:"absolute", inset:0,
-              display:"flex", justifyContent:"center", alignItems:"center",
-              fontWeight:900, fontSize:"clamp(106px,22vw,148px)", letterSpacing:"-3px", lineHeight:1,
-              fontFamily:"'Inter', Arial Black, sans-serif",
-              color:"transparent",
-              WebkitTextStroke:"1px rgba(0,180,255,0.6)",
-              textShadow:`0 0 20px rgba(0,180,255,0.5), 0 0 40px rgba(0,180,255,0.2)`,
-              pointerEvents:"none",
-              opacity: allLit ? 1 : 0,
-              transition: "opacity 1.2s ease",
-            }}>
-              vooy
-            </div>
-            {/* White glow fill allLit */}
-            <div style={{
-              position:"absolute", inset:0,
-              display:"flex", justifyContent:"center", alignItems:"center",
-              fontWeight:900, fontSize:"clamp(106px,22vw,148px)", letterSpacing:"-3px", lineHeight:1,
-              fontFamily:"'Inter', Arial Black, sans-serif",
-              color:"rgba(255,255,255,0.88)",
-              pointerEvents:"none",
-              opacity: allLit ? 1 : 0,
-              transition: "opacity 1.2s ease",
-            }}>
+            {/* allLit glow overlay - removed, handled by img filter */}
+            <div style={{ display:"none" }}>
               vooy
             </div>
           </div>
@@ -195,7 +177,7 @@ export default function Home() {
 
         {/* ── Catchphrase ── */}
         <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:28 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(10px,2.5vw,13px)", letterSpacing:"0.38em", color:GREEN, textTransform:"uppercase", textShadow:`0 0 20px rgba(0,180,255,0.4)`, margin:0 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(10px,2.5vw,13px)", letterSpacing:"0.15em", color:GREEN, textShadow:`0 0 20px rgba(0,180,255,0.4)`, margin:0 }}>
             Virtual Oracle Of You
           </p>
         </div>
