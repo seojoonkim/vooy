@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const GREEN = "#00ff9f";
+const GREEN = "#00d4ff";
 const CYAN = "#00e5ff";
-const DIM = "rgba(0,255,159,0.35)";
+const DIM = "rgba(0,180,255,0.35)";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -77,7 +77,7 @@ export default function Home() {
     let H = (canvas.height = window.innerHeight);
 
     const CHARS = "01アイウエ><[]{}=_▲▼◆●⬡⬢∞";
-    const COLORS = [GREEN, CYAN, "#b388ff", "#69ff47"];
+    const COLORS = [GREEN, CYAN, "#b388ff", "#4fc3f7"];
     const particles = Array.from({ length: 55 }, () => ({
       x: Math.random() * W, y: Math.random() * H,
       vy: -(0.25 + Math.random() * 0.7),
@@ -121,13 +121,13 @@ export default function Home() {
   }, []);
 
   return (
-    <main style={{ position:"relative", minHeight:"100vh", background:"linear-gradient(160deg,#050d0a 0%,#020810 55%,#0a0505 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif" }}>
+    <main style={{ position:"relative", minHeight:"100vh", background:"linear-gradient(160deg,#050a0d 0%,#020810 55%,#05050a 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif" }}>
       <canvas ref={canvasRef} style={{ position:"absolute", inset:0, pointerEvents:"none" }} />
 
       {/* Vignette */}
       <div style={{ position:"absolute", inset:0, pointerEvents:"none", background:"radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.8) 100%)" }} />
       {/* Center glow */}
-      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"min(700px,90vw)", height:400, borderRadius:"50%", background:`radial-gradient(ellipse, rgba(0,255,159,0.055) 0%, transparent 70%)`, pointerEvents:"none" }} />
+      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"min(700px,90vw)", height:400, borderRadius:"50%", background:`radial-gradient(ellipse, rgba(0,180,255,0.055) 0%, transparent 70%)`, pointerEvents:"none" }} />
 
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", gap:0, textAlign:"center", padding:"0 16px", width:"100%" }}>
 
@@ -138,8 +138,8 @@ export default function Home() {
             { label:"MODE", value:"AGENTIC" },
             { label:"UPTIME", value:uptime },
           ].map((item, i) => (
-            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(9px,2vw,11px)", letterSpacing:"0.15em", padding:"4px 10px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,255,159,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
-              <span style={{ color:"rgba(0,255,159,0.25)" }}>{item.label}</span>
+            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(9px,2vw,11px)", letterSpacing:"0.15em", padding:"4px 10px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
+              <span style={{ color:"rgba(0,180,255,0.25)" }}>{item.label}</span>
               <span style={{ color: item.label === "SYS" ? GREEN : DIM }}>{item.value}</span>
               {item.label === "SYS" && <span style={{ color:GREEN, animation:"blink 1s step-end infinite", fontSize:8 }}>●</span>}
             </div>
@@ -157,7 +157,7 @@ export default function Home() {
                   transition:"opacity 0.5s ease, text-shadow 0.7s ease, color 0.5s ease",
                   color: litLetters[i] ? "#fff" : "rgba(255,255,255,0.08)",
                   textShadow: litLetters[i] && !allLit
-                    ? `0 0 20px rgba(0,255,159,0.6), 0 0 40px rgba(0,255,159,0.3)`
+                    ? `0 0 20px rgba(0,180,255,0.6), 0 0 40px rgba(0,180,255,0.3)`
                     : "none",
                 }}>{ch}</span>
               ))}
@@ -169,8 +169,8 @@ export default function Home() {
               fontWeight:900, fontSize:"clamp(106px,22vw,148px)", letterSpacing:"-3px", lineHeight:1,
               fontFamily:"'Inter', Arial Black, sans-serif",
               color:"transparent",
-              WebkitTextStroke:"1px rgba(0,255,159,0.6)",
-              textShadow:`0 0 20px rgba(0,255,159,0.5), 0 0 40px rgba(0,255,159,0.2)`,
+              WebkitTextStroke:"1px rgba(0,180,255,0.6)",
+              textShadow:`0 0 20px rgba(0,180,255,0.5), 0 0 40px rgba(0,180,255,0.2)`,
               pointerEvents:"none",
               opacity: allLit ? 1 : 0,
               transition: "opacity 1.2s ease",
@@ -197,8 +197,8 @@ export default function Home() {
 
         {/* ── Terminal command line ── */}
         <div style={{ marginTop:28, fontFamily:"monospace", fontSize:"clamp(10px,2.5vw,13px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.3s ease both", opacity:0 }}>
-          <span style={{ color:"rgba(0,255,159,0.25)" }}>root@vooy</span>
-          <span style={{ color:"rgba(0,255,159,0.15)" }}>:~$ </span>
+          <span style={{ color:"rgba(0,180,255,0.25)" }}>root@vooy</span>
+          <span style={{ color:"rgba(0,180,255,0.15)" }}>:~$ </span>
           <span style={{ color:GREEN }}>{typed}</span>
           <span style={{ animation:"blink 0.8s step-end infinite", color:GREEN }}>▌</span>
         </div>
@@ -208,18 +208,18 @@ export default function Home() {
 
         {/* ── Catchphrase ── */}
         <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.5s ease both", opacity:0 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(10px,2.5vw,13px)", letterSpacing:"0.38em", color:GREEN, textTransform:"uppercase", textShadow:`0 0 20px rgba(0,255,159,0.4)`, margin:0 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(10px,2.5vw,13px)", letterSpacing:"0.38em", color:GREEN, textTransform:"uppercase", textShadow:`0 0 20px rgba(0,180,255,0.4)`, margin:0 }}>
             AI agents. Your world. Native.
           </p>
         </div>
 
         {/* ── Mini terminal log ── */}
-        <div style={{ marginTop:28, fontFamily:"monospace", fontSize:"clamp(8px,1.8vw,10px)", color:"rgba(0,255,159,0.22)", letterSpacing:"0.08em", lineHeight:1.9, textAlign:"center", animation:"fadeSlide 1s 0.7s ease both", opacity:0, maxWidth:320, width:"100%" }}>
+        <div style={{ marginTop:28, fontFamily:"monospace", fontSize:"clamp(8px,1.8vw,10px)", color:"rgba(0,180,255,0.22)", letterSpacing:"0.08em", lineHeight:1.9, textAlign:"center", animation:"fadeSlide 1s 0.7s ease both", opacity:0, maxWidth:320, width:"100%" }}>
           {[
             "[OK]  agent runtime initialized",
             "[>>]  autonomous systems online...",
           ].map((line, i) => (
-            <div key={i} style={{ color: i === 1 ? `rgba(0,229,255,0.35)` : "rgba(0,255,159,0.22)" }}>
+            <div key={i} style={{ color: i === 1 ? `rgba(79,195,247,0.35)` : "rgba(0,180,255,0.22)" }}>
               {line}
             </div>
           ))}
@@ -237,10 +237,10 @@ export default function Home() {
           50%      { opacity:0; }
         }
         @keyframes breathe {
-          0%,100% { opacity:1;    text-shadow:0 0 50px rgba(0,255,159,0.4),0 0 100px rgba(0,255,159,0.15); }
+          0%,100% { opacity:1;    text-shadow:0 0 50px rgba(0,180,255,0.4),0 0 100px rgba(0,180,255,0.15); }
           35%     { opacity:0.12; text-shadow:none; }
           55%     { opacity:0.06; text-shadow:none; }
-          75%     { opacity:0.65; text-shadow:0 0 30px rgba(0,255,159,0.2); }
+          75%     { opacity:0.65; text-shadow:0 0 30px rgba(0,180,255,0.2); }
         }
         @keyframes underlineGlow {
           0%   { opacity:0.08; background-size:20% 100%; background-position:0% center; }
