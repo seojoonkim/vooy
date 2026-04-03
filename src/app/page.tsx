@@ -270,35 +270,37 @@ export default function Home() {
               style={{ transition: "fill 0.5s ease" }}
             />
             {/* o1 - solid white outer shape (font path) */}
-            <path
-              d={O1_OUTER}
-              fill={litLetters[1] ? "white" : "rgba(255,255,255,0.08)"}
-              filter={litLetters[1] ? "url(#letterGlow)" : undefined}
-              style={{ transition: "fill 0.5s ease" }}
-            />
-            {/* o1 - moving dark "hole" (pupil), clipped to o shape */}
-            <circle
-              cx={O1_CENTER.x + eyeOffset.x}
-              cy={O1_CENTER.y + eyeOffset.y}
-              r={PUPIL_R}
-              fill="#050a0d"
-              clipPath="url(#o1clip)"
-            />
+            <g filter={litLetters[1] ? "url(#letterGlow)" : undefined}>
+              <path
+                d={O1_OUTER}
+                fill={litLetters[1] ? "white" : "rgba(255,255,255,0.08)"}
+                style={{ transition: "fill 0.5s ease" }}
+              />
+              {/* o1 - moving dark "hole" (pupil), clipped to o shape */}
+              <circle
+                cx={O1_CENTER.x + eyeOffset.x}
+                cy={O1_CENTER.y + eyeOffset.y}
+                r={PUPIL_R}
+                fill="#050a0d"
+                clipPath="url(#o1clip)"
+              />
+            </g>
             {/* o2 - solid white outer shape (font path) */}
-            <path
-              d={O2_OUTER}
-              fill={litLetters[2] ? "white" : "rgba(255,255,255,0.08)"}
-              filter={litLetters[2] ? "url(#letterGlow)" : undefined}
-              style={{ transition: "fill 0.5s ease" }}
-            />
-            {/* o2 - moving dark "hole" (pupil), clipped to o shape */}
-            <circle
-              cx={O2_CENTER.x + eyeOffset.x}
-              cy={O2_CENTER.y + eyeOffset.y}
-              r={PUPIL_R}
-              fill="#050a0d"
-              clipPath="url(#o2clip)"
-            />
+            <g filter={litLetters[2] ? "url(#letterGlow)" : undefined}>
+              <path
+                d={O2_OUTER}
+                fill={litLetters[2] ? "white" : "rgba(255,255,255,0.08)"}
+                style={{ transition: "fill 0.5s ease" }}
+              />
+              {/* o2 - moving dark "hole" (pupil), clipped to o shape */}
+              <circle
+                cx={O2_CENTER.x + eyeOffset.x}
+                cy={O2_CENTER.y + eyeOffset.y}
+                r={PUPIL_R}
+                fill="#050a0d"
+                clipPath="url(#o2clip)"
+              />
+            </g>
             {/* y */}
             <path
               d={Y_PATH}
