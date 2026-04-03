@@ -195,22 +195,22 @@ export default function Home() {
           <div style={{ marginTop:6, height:2, background:`linear-gradient(to right, transparent, ${GREEN}, ${CYAN}, transparent)`, borderRadius:2, animation:"underlineGlow 8s ease-in-out infinite" }} />
         </div>
 
-        {/* ── Terminal command line ── */}
-        <div style={{ marginTop:28, fontFamily:"monospace", fontSize:"clamp(10px,2.5vw,13px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.3s ease both", opacity:0 }}>
-          <span style={{ color:"rgba(0,180,255,0.25)" }}>root@vooy</span>
-          <span style={{ color:"rgba(0,180,255,0.15)" }}>:~$ </span>
-          <span style={{ color:GREEN }}>{typed}</span>
-          <span style={{ animation:"blink 0.8s step-end infinite", color:GREEN }}>▌</span>
+        {/* ── Catchphrase ── */}
+        <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:28 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(10px,2.5vw,13px)", letterSpacing:"0.38em", color:GREEN, textTransform:"uppercase", textShadow:`0 0 20px rgba(0,180,255,0.4)`, margin:0 }}>
+            Virtual Oracle Of You
+          </p>
         </div>
 
         {/* ── Divider ── */}
         <div style={{ width:1, height:28, background:`linear-gradient(to bottom,transparent,${DIM},transparent)`, margin:"20px 0", animation:"fadeSlide 0.8s 0.4s ease both", opacity:0 }} />
 
-        {/* ── Catchphrase ── */}
-        <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.5s ease both", opacity:0 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(10px,2.5vw,13px)", letterSpacing:"0.38em", color:GREEN, textTransform:"uppercase", textShadow:`0 0 20px rgba(0,180,255,0.4)`, margin:0 }}>
-            Virtual Oracle Of You
-          </p>
+        {/* ── Terminal command line ── */}
+        <div style={{ fontFamily:"monospace", fontSize:"clamp(10px,2.5vw,13px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.5s ease both", opacity:0 }}>
+          <span style={{ color:"rgba(0,180,255,0.25)" }}>root@vooy</span>
+          <span style={{ color:"rgba(0,180,255,0.15)" }}>:~$ </span>
+          <span style={{ color:GREEN }}>{typed}</span>
+          <span style={{ animation:"blink 0.8s step-end infinite", color:GREEN }}>▌</span>
         </div>
 
         {/* ── Mini terminal log ── */}
