@@ -40,11 +40,9 @@ export default function Home() {
     return () => clearInterval(iv);
   }, []);
 
-  // Letter-by-letter light up sequence
+  // Letter-by-letter light up sequence (one-time, stays lit)
   useEffect(() => {
     const STEP = 350;
-    const HOLD = 1800;
-    const PAUSE = 2200;
 
     function runCycle() {
       for (let i = 0; i < 4; i++) {
@@ -52,13 +50,7 @@ export default function Home() {
           setLitLetters(prev => { const n=[...prev]; n[i]=true; return n; });
           if (i === 3) {
             setTimeout(() => setAllLit(true), 60);
-            setTimeout(() => {
-              setAllLit(false);
-              setTimeout(() => {
-                setLitLetters([false,false,false,false]);
-                setTimeout(runCycle, PAUSE);
-              }, 1000);
-            }, HOLD);
+            // 리셋 없음 - 여기서 끝
           }
         }, i * STEP);
       }
@@ -146,48 +138,50 @@ export default function Home() {
           ))}
         </div>
 
-        {/* ── LOGO ── */}
+        {/* ── LOGO (inline SVG) ── */}
         <div style={{ position:"relative", animation:"fadeSlide 0.8s 0.15s ease both", opacity:0 }}>
-          <div style={{ position:"relative" }}>
-            {/* Base: individual letter lighting */}
-            <div style={{ fontWeight:900, fontSize:"clamp(106px,22vw,148px)", letterSpacing:"-3px", lineHeight:1, display:"flex", justifyContent:"center", fontFamily:"'Inter', Arial Black, sans-serif" }}>
-              {"vooy".split("").map((ch, i) => (
-                <span key={i} style={{
-                  display:"inline-block",
-                  transition:"opacity 0.5s ease, color 0.5s ease",
-                  color: litLetters[i] ? "#fff" : "rgba(255,255,255,0.08)",
-                }}>{ch}</span>
-              ))}
-            </div>
-            {/* Overlay: allLit outline */}
-            <div style={{
-              position:"absolute", inset:0,
-              display:"flex", justifyContent:"center", alignItems:"center",
-              fontWeight:900, fontSize:"clamp(106px,22vw,148px)", letterSpacing:"-3px", lineHeight:1,
-              fontFamily:"'Inter', Arial Black, sans-serif",
-              color:"transparent",
-              WebkitTextStroke:"1px rgba(0,180,255,0.6)",
-              textShadow:`0 0 20px rgba(0,180,255,0.5), 0 0 40px rgba(0,180,255,0.2)`,
-              pointerEvents:"none",
-              opacity: allLit ? 1 : 0,
-              transition: "opacity 1.2s ease",
-            }}>
-              vooy
-            </div>
-            {/* White glow fill allLit */}
-            <div style={{
-              position:"absolute", inset:0,
-              display:"flex", justifyContent:"center", alignItems:"center",
-              fontWeight:900, fontSize:"clamp(106px,22vw,148px)", letterSpacing:"-3px", lineHeight:1,
-              fontFamily:"'Inter', Arial Black, sans-serif",
-              color:"rgba(255,255,255,0.88)",
-              pointerEvents:"none",
-              opacity: allLit ? 1 : 0,
-              transition: "opacity 1.2s ease",
-            }}>
-              vooy
-            </div>
-          </div>
+          <svg
+            viewBox="0 0 313.1094 165.1953"
+            style={{
+              width: "clamp(280px, 65vw, 510px)",
+              height: "auto",
+              display: "block",
+              filter: allLit
+                ? "drop-shadow(0 0 12px rgba(0,180,255,0.7)) drop-shadow(0 0 30px rgba(0,180,255,0.4))"
+                : "none",
+              transition: "filter 1.2s ease",
+            }}
+          >
+            <defs>
+              <filter id="letterGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            {[
+              // v
+              "M34.0234375 126.25 10.703125 60.7421875H35.4296875L43.92578125 90.625Q45.21484375 95.078125 46.26953125 99.6484375Q47.32421875 104.21875 48.26171875 109.140625Q49.19921875 104.21875 50.224609375 99.677734375Q51.25 95.13671875 52.48046875 90.625L60.7421875 60.7421875H85.1171875L61.6796875 126.25Z",
+              // o
+              "M120.37890625 127.421875Q109.71484375 127.421875 102.09765625 123.173828125Q94.48046875 118.92578125 90.466796875 111.337890625Q86.453125 103.75 86.453125 93.671875Q86.453125 83.59375 90.466796875 76.005859375Q94.48046875 68.41796875 102.09765625 64.169921875Q109.71484375 59.921875 120.37890625 59.921875Q131.04296875 59.921875 138.6015625 64.169921875Q146.16015625 68.41796875 150.173828125 76.005859375Q154.1875 83.59375 154.1875 93.671875Q154.1875 103.75 150.173828125 111.337890625Q146.16015625 118.92578125 138.6015625 123.173828125Q131.04296875 127.421875 120.37890625 127.421875ZM120.37890625 109.84375Q124.94921875 109.84375 127.556640625 105.537109375Q130.1640625 101.23046875 130.1640625 93.5546875Q130.1640625 85.8203125 127.556640625 81.66015625Q124.94921875 77.5 120.37890625 77.5Q115.75 77.5 113.11328125 81.66015625Q110.4765625 85.8203125 110.4765625 93.5546875Q110.4765625 101.23046875 113.11328125 105.537109375Q115.75 109.84375 120.37890625 109.84375Z",
+              // o
+              "M192.37890625 127.421875Q181.71484375 127.421875 174.09765625 123.173828125Q166.48046875 118.92578125 162.46679688 111.337890625Q158.453125 103.75 158.453125 93.671875Q158.453125 83.59375 162.46679688 76.005859375Q166.48046875 68.41796875 174.09765625 64.169921875Q181.71484375 59.921875 192.37890625 59.921875Q203.04296875 59.921875 210.6015625 64.169921875Q218.16015625 68.41796875 222.17382813 76.005859375Q226.1875 83.59375 226.1875 93.671875Q226.1875 103.75 222.17382813 111.337890625Q218.16015625 118.92578125 210.6015625 123.173828125Q203.04296875 127.421875 192.37890625 127.421875ZM192.37890625 109.84375Q196.94921875 109.84375 199.55664063 105.537109375Q202.1640625 101.23046875 202.1640625 93.5546875Q202.1640625 85.8203125 199.55664063 81.66015625Q196.94921875 77.5 192.37890625 77.5Q187.75 77.5 185.11328125 81.66015625Q182.47656250 85.8203125 182.47656250 93.5546875Q182.47656250 101.23046875 185.11328125 105.537109375Q187.75 109.84375 192.37890625 109.84375Z",
+              // y
+              "M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 133.046875Q246.80078125 134.5703125 250.140625 132.900390625Q253.48046875 131.23046875 252.42578125 128.18359375L251.78125 126.30859375L227.52343750 60.7421875H252.25L260.74609375 90.625Q261.91796875 94.78515625 262.708984375 98.974609375Q263.5 103.1640625 264.203125 107.6171875Q265.19921875 103.10546875 266.283203125 98.916015625Q267.3671875 94.7265625 268.65625 90.625L278.03125 60.7421875H302.40625L275.39453125 132.2265625Q273.40234375 137.55859375 270.00390625 141.865234375Q266.60546875 146.171875 261.185546875 148.69140625Q255.765625 151.2109375 247.50390625 151.2109375Q243.46093750 151.2109375 239.53515625 150.625Q235.609375 150.0390625 232.85546875 148.984375Z",
+            ].map((d, i) => (
+              <path
+                key={i}
+                d={d}
+                fillRule="evenodd"
+                fill={litLetters[i] ? "white" : "rgba(255,255,255,0.08)"}
+                filter={litLetters[i] ? "url(#letterGlow)" : undefined}
+                style={{ transition: "fill 0.5s ease" }}
+              />
+            ))}
+          </svg>
           {/* Underline */}
           <div style={{ marginTop:6, height:2, background:`linear-gradient(to right, transparent, ${GREEN}, ${CYAN}, transparent)`, borderRadius:2, animation:"underlineGlow 8s ease-in-out infinite" }} />
         </div>
