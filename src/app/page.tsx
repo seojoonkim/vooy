@@ -6,13 +6,9 @@ const GREEN = "#00d4ff";
 const CYAN = "#00e5ff";
 const DIM = "rgba(0,180,255,0.175)";
 
-// Eye centers (computed from SVG inner hole bounding boxes)
-const EYE_CENTERS = [
-  { x: 120.32, y: 93.67 }, // first 'o'
-  { x: 192.32, y: 93.67 }, // second 'o'
-];
+// Eye reference center (for offset calculation)
+const refCenter = { x: 120.32, y: 93.67 };
 const EYE_MAX_R = 15;
-const EYE_PUPIL_R = 9;
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,10 +16,10 @@ export default function Home() {
   const [allLit, setAllLit] = useState(false);
   const [typed, setTyped] = useState("");
   const [uptime, setUptime] = useState("00:00:00");
-  const [eyePos, setEyePos] = useState([{ x: 0, y: 0 }, { x: 0, y: 0 }]);
+  const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 });
   const mousePos = useRef({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
-  const eyePosRef = useRef([{ x: 0, y: 0 }, { x: 0, y: 0 }]);
+  const eyeOffsetRef = useRef({ x: 0, y: 0 });
 
   // Typewriter effect for command line
   const CMD = "initialize --mode=agentic --level=autonomous";
@@ -84,7 +80,7 @@ export default function Home() {
   useEffect(() => {
     if (!allLit) return;
 
-    let randomTarget = [{ x: 0, y: 0 }, { x: 0, y: 0 }];
+    let randomTarget = { x: 0, y: 0 };
     let lastRandomChange = 0;
     let rafId = 0;
 
@@ -102,38 +98,36 @@ export default function Home() {
         // Random target every 2s
         if (now - lastRandomChange > 2000) {
           lastRandomChange = now;
-          randomTarget = EYE_CENTERS.map(() => ({
+          randomTarget = {
             x: (Math.random() * 2 - 1) * EYE_MAX_R,
             y: (Math.random() * 2 - 1) * EYE_MAX_R,
-          }));
+          };
         }
 
-        const prev = eyePosRef.current;
-        const next = EYE_CENTERS.map((center, i) => {
-          const dist = Math.hypot(mouseInSvgX - center.x, mouseInSvgY - center.y);
-          const isNear = dist < 80;
+        const prev = eyeOffsetRef.current;
+        const dist = Math.hypot(mouseInSvgX - refCenter.x, mouseInSvgY - refCenter.y);
+        const isNear = dist < 80;
 
-          let targetX: number, targetY: number;
-          if (isNear) {
-            const dx = mouseInSvgX - center.x;
-            const dy = mouseInSvgY - center.y;
-            const angle = Math.atan2(dy, dx);
-            const r = Math.min(dist / 80 * EYE_MAX_R, EYE_MAX_R);
-            targetX = Math.cos(angle) * r;
-            targetY = Math.sin(angle) * r;
-          } else {
-            targetX = randomTarget[i].x;
-            targetY = randomTarget[i].y;
-          }
+        let targetX: number, targetY: number;
+        if (isNear) {
+          const dx = mouseInSvgX - refCenter.x;
+          const dy = mouseInSvgY - refCenter.y;
+          const angle = Math.atan2(dy, dx);
+          const r = Math.min(dist / 80 * EYE_MAX_R, EYE_MAX_R);
+          targetX = Math.cos(angle) * r;
+          targetY = Math.sin(angle) * r;
+        } else {
+          targetX = randomTarget.x;
+          targetY = randomTarget.y;
+        }
 
-          return {
-            x: (prev[i]?.x ?? 0) * 0.85 + targetX * 0.15,
-            y: (prev[i]?.y ?? 0) * 0.85 + targetY * 0.15,
-          };
-        });
+        const next = {
+          x: (prev.x ?? 0) * 0.85 + targetX * 0.15,
+          y: (prev.y ?? 0) * 0.85 + targetY * 0.15,
+        };
 
-        eyePosRef.current = next;
-        setEyePos(next);
+        eyeOffsetRef.current = next;
+        setEyeOffset(next);
       }
 
       rafId = requestAnimationFrame(animate);
@@ -257,34 +251,16 @@ export default function Home() {
             />
             {/* o1 흰 원 (눈 흰자) */}
             <circle
-              cx={120.32} cy={93.67} r={33.75}
+              cx={120.32 + eyeOffset.x} cy={93.67 + eyeOffset.y} r={33.75}
               fill={litLetters[1] ? "white" : "rgba(255,255,255,0.08)"}
               style={{ transition: "fill 0.5s ease" }}
             />
-            {/* o1 눈동자 */}
-            {allLit && (
-              <circle
-                cx={120.32 + eyePos[0].x}
-                cy={93.67 + eyePos[0].y}
-                r={EYE_PUPIL_R}
-                fill="#00d4ff"
-              />
-            )}
             {/* o2 흰 원 (눈 흰자) */}
             <circle
-              cx={192.32} cy={93.67} r={33.75}
+              cx={192.32 + eyeOffset.x} cy={93.67 + eyeOffset.y} r={33.75}
               fill={litLetters[2] ? "white" : "rgba(255,255,255,0.08)"}
               style={{ transition: "fill 0.5s ease" }}
             />
-            {/* o2 눈동자 */}
-            {allLit && (
-              <circle
-                cx={192.32 + eyePos[1].x}
-                cy={93.67 + eyePos[1].y}
-                r={EYE_PUPIL_R}
-                fill="#00d4ff"
-              />
-            )}
             {/* y */}
             <path
               d="M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 133.046875Q246.80078125 134.5703125 250.140625 132.900390625Q253.48046875 131.23046875 252.42578125 128.18359375L251.78125 126.30859375L227.52343750 60.7421875H252.25L260.74609375 90.625Q261.91796875 94.78515625 262.708984375 98.974609375Q263.5 103.1640625 264.203125 107.6171875Q265.19921875 103.10546875 266.283203125 98.916015625Q267.3671875 94.7265625 268.65625 90.625L278.03125 60.7421875H302.40625L275.39453125 132.2265625Q273.40234375 137.55859375 270.00390625 141.865234375Q266.60546875 146.171875 261.185546875 148.69140625Q255.765625 151.2109375 247.50390625 151.2109375Q243.46093750 151.2109375 239.53515625 150.625Q235.609375 150.0390625 232.85546875 148.984375Z"
