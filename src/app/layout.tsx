@@ -8,9 +8,30 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "vxxv — Agentic AI Systems",
+  title: "vooy — Virtual Oracle Of You",
   description:
-    "Building autonomous AI agents that see, think, and act. Operators of omo.bot and fusepie.com.",
+    "vooy is your Virtual Oracle Of You. Autonomous AI agents that see, think, and act. Operators of omo.bot and fusepie.com.",
+  openGraph: {
+    title: "vooy — Virtual Oracle Of You",
+    description: "Your Virtual Oracle. Autonomous AI agents that see, think, and act.",
+    url: "https://vooy.ai",
+    siteName: "vooy",
+    images: [
+      {
+        url: "https://vooy.ai/vooy-logo.svg",
+        width: 600,
+        height: 200,
+        alt: "vooy — Virtual Oracle Of You",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "vooy — Virtual Oracle Of You",
+    description: "Your Virtual Oracle. Autonomous AI agents that see, think, and act.",
+    images: ["https://vooy.ai/vooy-logo.svg"],
+  },
   icons: {
     icon: "/favicon.ico",
   },
