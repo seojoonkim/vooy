@@ -137,8 +137,8 @@ export default function Home() {
         }
 
         const next = {
-          x: (prev.x ?? 0) * 0.85 + targetX * 0.15,
-          y: (prev.y ?? 0) * 0.85 + targetY * 0.15,
+          x: (prev.x ?? 0) * 0.775 + targetX * 0.225,
+          y: (prev.y ?? 0) * 0.775 + targetY * 0.225,
         };
 
         eyeOffsetRef.current = next;
