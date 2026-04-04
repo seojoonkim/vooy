@@ -272,13 +272,7 @@ export default function Home() {
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
                 <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
               </mask>
-              {/* Clip paths to constrain inner glow to inside the hole */}
-              <clipPath id="o1hole">
-                <path d={O1_INNER} transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
-              </clipPath>
-              <clipPath id="o2hole">
-                <path d={O2_INNER} transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
-              </clipPath>
+
             </defs>
             {/* v */}
             <path
@@ -296,18 +290,7 @@ export default function Home() {
                 mask="url(#o1mask)"
                 style={{ transition: "fill 0.5s ease" }}
               />
-              {/* Inner glow - white stroke clipped to inside the hole */}
-              {litLetters[1] && (
-                <path
-                  d={O1_INNER}
-                  fill="none"
-                  stroke="rgba(255,255,255,0.15)"
-                  strokeWidth="2"
-                  transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
-                  clipPath="url(#o1hole)"
-                  filter="url(#innerGlow)"
-                />
-              )}
+
             </g>
             {/* o2 - outer shape with mask for transparent moving hole */}
             <g filter={litLetters[2] ? "url(#letterGlow)" : undefined}>
@@ -317,18 +300,7 @@ export default function Home() {
                 mask="url(#o2mask)"
                 style={{ transition: "fill 0.5s ease" }}
               />
-              {/* Inner glow - white stroke clipped to inside the hole */}
-              {litLetters[2] && (
-                <path
-                  d={O2_INNER}
-                  fill="none"
-                  stroke="rgba(255,255,255,0.15)"
-                  strokeWidth="2"
-                  transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`}
-                  clipPath="url(#o2hole)"
-                  filter="url(#innerGlow)"
-                />
-              )}
+
             </g>
             {/* y */}
             <path
