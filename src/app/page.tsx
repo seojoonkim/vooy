@@ -67,7 +67,7 @@ export default function Home() {
 
   // Letter-by-letter light up sequence (one-time, stays lit)
   useEffect(() => {
-    const STEP = 350;
+    const STEP = 600;
 
     function runCycle() {
       for (let i = 0; i < 4; i++) {
@@ -80,7 +80,7 @@ export default function Home() {
         }, i * STEP);
       }
     }
-    const t = setTimeout(runCycle, 600);
+    const t = setTimeout(runCycle, 900);
     return () => clearTimeout(t);
   }, []);
 
