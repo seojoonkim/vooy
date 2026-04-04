@@ -217,13 +217,13 @@ export default function Home() {
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", gap:0, textAlign:"center", padding:"0 16px", width:"100%" }}>
 
         {/* ── Top status bar ── */}
-        <div style={{ display:"flex", gap:"clamp(8px,3vw,24px)", marginBottom:32, flexWrap:"wrap", justifyContent:"center", animation:"fadeSlide 0.6s ease both" }}>
+        <div style={{ display:"flex", gap:"clamp(8px,3vw,24px)", marginBottom:36, flexWrap:"wrap", justifyContent:"center", animation:"fadeSlide 0.6s ease both" }}>
           {[
             { label:"SYS", value:"ONLINE" },
             { label:"MODE", value:"AGENTIC" },
             { label:"UPTIME", value:uptime },
           ].map((item, i) => (
-            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(9px,2vw,11px)", letterSpacing:"0.15em", padding:"4px 10px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
+            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(11px,2vw,11px)", letterSpacing:"0.15em", padding:"4px 10px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
               <span style={{ color:"rgba(0,180,255,0.4)" }}>{item.label}</span>
               <span style={{ color: item.label === "SYS" ? GREEN : DIM }}>{item.value}</span>
               {item.label === "SYS" && <span style={{ color:GREEN, animation:"blink 1s step-end infinite", fontSize:8 }}>●</span>}
@@ -237,7 +237,7 @@ export default function Home() {
             ref={svgRef}
             viewBox="0 0 313.1094 165.1953"
             style={{
-              width: "clamp(280px, 65vw, 510px)",
+              width: "clamp(290px,50vw,550px)",
               height: "auto",
               display: "block",
               filter: allLit
@@ -344,8 +344,8 @@ export default function Home() {
         </div>
 
         {/* ── Catchphrase ── */}
-        <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:28 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(11px,2.5vw,14px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.5)`, margin:0 }}>
+        <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:32 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(13px,2.5vw,14px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.5)`, margin:0 }}>
             Virtual Oracle Of You
           </p>
         </div>
@@ -354,7 +354,7 @@ export default function Home() {
         <div style={{ width:1, height:28, background:`linear-gradient(to bottom,transparent,${DIM},transparent)`, margin:"20px 0", animation:"fadeSlide 0.8s 0.4s ease both", opacity:0 }} />
 
         {/* ── Terminal command line ── */}
-        <div style={{ fontFamily:"monospace", fontSize:"clamp(10px,2.5vw,13px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.5s ease both", opacity:0 }}>
+        <div style={{ fontFamily:"monospace", fontSize:"clamp(12px,2.5vw,13px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.5s ease both", opacity:0 }}>
           <span style={{ color:"rgba(0,180,255,0.5)" }}>root@vooy</span>
           <span style={{ color:"rgba(0,180,255,0.35)" }}>:~$ </span>
           <span style={{ color:GREEN }}>{typed}</span>
