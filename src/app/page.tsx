@@ -317,7 +317,7 @@ export default function Home() {
 
         {/* ── Catchphrase ── */}
         <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:37 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(13px,2.9vw,16px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.5)`, margin:0 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(16px,3.5vw,20px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.5)`, margin:0 }}>
             Virtual Oracle Of You
           </p>
         </div>
