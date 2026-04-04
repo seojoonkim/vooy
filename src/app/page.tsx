@@ -8,7 +8,7 @@ const DIM = "rgba(0,180,255,0.5)";
 
 // Eye reference center (for offset calculation)
 const refCenter = { x: 120.32, y: 93.67 };
-const EYE_MAX_R = 9.1;
+const EYE_MAX_R = 12;
 
 // Original font paths extracted from vooy-logo-path.svg
 const V_PATH = "M34.0234375 126.25 10.703125 60.7421875H35.4296875L43.92578125 90.625Q45.21484375 95.078125 46.26953125 99.6484375Q47.32421875 104.21875 48.26171875 109.140625Q49.19921875 104.21875 50.224609375 99.677734375Q51.25 95.13671875 52.48046875 90.625L60.7421875 60.7421875H85.1171875L61.6796875 126.25Z";
@@ -266,11 +266,11 @@ export default function Home() {
               {/* Masks for transparent holes that move with eye offset */}
               <mask id="o1mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y}) translate(${O1_CENTER.x}, ${O1_CENTER.y}) scale(1.15) translate(${-O1_CENTER.x}, ${-O1_CENTER.y})`} />
+                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
               </mask>
               <mask id="o2mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y}) translate(${O2_CENTER.x}, ${O2_CENTER.y}) scale(1.15) translate(${-O2_CENTER.x}, ${-O2_CENTER.y})`} />
+                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
               </mask>
 
             </defs>
