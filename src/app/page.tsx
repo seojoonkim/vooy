@@ -129,9 +129,10 @@ export default function Home() {
           targetX = randomTarget.x;
           targetY = randomTarget.y;
         } else {
-          // Desktop: always follow mouse direction
+          // Desktop: follow mouse direction, but move toward center when mouse is close
+          const dist = Math.hypot(mouseInSvgX - refCenter.x, mouseInSvgY - refCenter.y);
+          const r = Math.min(dist / 60 * EYE_MAX_R, EYE_MAX_R * 0.8);
           const ang = Math.atan2(mouseInSvgY - refCenter.y, mouseInSvgX - refCenter.x);
-          const r = EYE_MAX_R * 0.8;
           targetX = Math.cos(ang) * r;
           targetY = Math.sin(ang) * r;
         }
