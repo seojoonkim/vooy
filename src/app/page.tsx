@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 const GREEN = "#00d4ff";
 const CYAN = "#00e5ff";
-const DIM = "rgba(0,180,255,0.5)";
+const DIM = "rgba(0,180,255,0.7)";
 
 // Eye reference center (for offset calculation)
 const refCenter = { x: 120.32, y: 93.67 };
@@ -217,14 +217,14 @@ export default function Home() {
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", gap:0, textAlign:"center", padding:"0 16px", width:"100%" }}>
 
         {/* ── Top status bar ── */}
-        <div style={{ display:"flex", gap:"clamp(6px,2vw,24px)", marginBottom:42, flexWrap:"nowrap", justifyContent:"center", animation:"fadeSlide 0.6s ease both" }}>
+        <div style={{ display:"flex", gap:"clamp(6.3px,2.1vw,25.2px)", marginBottom:44, flexWrap:"nowrap", justifyContent:"center", animation:"fadeSlide 0.6s ease both" }}>
           {[
             { label:"SYS", value:"ONLINE" },
             { label:"MODE", value:"AGENTIC" },
             { label:"UPTIME", value:uptime },
           ].map((item, i) => (
-            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(9px,2.3vw,13px)", letterSpacing:"0.12em", padding:"3px 6px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
-              <span style={{ color:"rgba(0,180,255,0.4)" }}>{item.label}</span>
+            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(9.45px,2.415vw,13.65px)", letterSpacing:"0.12em", padding:"3px 7px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
+              <span style={{ color:"rgba(0,180,255,0.6)" }}>{item.label}</span>
               <span style={{ color: item.label === "SYS" ? GREEN : DIM }}>{item.value}</span>
               {item.label === "SYS" && <span style={{ color:GREEN, animation:"blink 1s step-end infinite", fontSize:8 }}>●</span>}
             </div>
@@ -237,7 +237,7 @@ export default function Home() {
             ref={svgRef}
             viewBox="0 0 313.1094 165.1953"
             style={{
-              width: "clamp(290px,58vw,632px)",
+              width: "clamp(304.5px,60.9vw,663.6px)",
               height: "auto",
               display: "block",
               filter: allLit
@@ -316,30 +316,30 @@ export default function Home() {
         </div>
 
         {/* ── Catchphrase ── */}
-        <div style={{ display:"flex", flexDirection:"column", gap:10, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:37 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(16px,3.5vw,20px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.5)`, margin:0 }}>
+        <div style={{ display:"flex", flexDirection:"column", gap:11, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:39 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(16.8px,3.675vw,21px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.8), 0 0 28px rgba(0,180,255,0.5), 0 0 50px rgba(0,180,255,0.25)`, margin:0 }}>
             Virtual Oracle Of You
           </p>
         </div>
 
         {/* ── Divider ── */}
-        <div style={{ width:1, height:28, background:`linear-gradient(to bottom,transparent,${DIM},transparent)`, margin:"20px 0", animation:"fadeSlide 0.8s 0.4s ease both", opacity:0 }} />
+        <div style={{ width:1, height:29, background:`linear-gradient(to bottom,transparent,${DIM},transparent)`, margin:"21px 0", animation:"fadeSlide 0.8s 0.4s ease both", opacity:0 }} />
 
         {/* ── Terminal command line ── */}
-        <div style={{ fontFamily:"monospace", fontSize:"clamp(12px,2.9vw,15px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.5s ease both", opacity:0 }}>
-          <span style={{ color:"rgba(0,180,255,0.5)" }}>root@vooy</span>
-          <span style={{ color:"rgba(0,180,255,0.35)" }}>:~$ </span>
+        <div style={{ fontFamily:"monospace", fontSize:"clamp(12.6px,3.045vw,15.75px)", color:DIM, letterSpacing:"0.08em", animation:"fadeSlide 0.8s 0.5s ease both", opacity:0 }}>
+          <span style={{ color:"rgba(0,180,255,0.7)" }}>root@vooy</span>
+          <span style={{ color:"rgba(0,180,255,0.5)" }}>:~$ </span>
           <span style={{ color:GREEN }}>{typed}</span>
           <span style={{ animation:"blink 0.8s step-end infinite", color:GREEN }}>▌</span>
         </div>
 
         {/* ── Mini terminal log ── */}
-        <div style={{ marginTop:28, fontFamily:"monospace", fontSize:"clamp(8px,1.8vw,10px)", color:"rgba(0,180,255,0.35)", letterSpacing:"0.08em", lineHeight:1.9, textAlign:"center", animation:"fadeSlide 1s 0.7s ease both", opacity:0, maxWidth:320, width:"100%" }}>
+        <div style={{ marginTop:29, fontFamily:"monospace", fontSize:"clamp(8.4px,1.89vw,10.5px)", color:"rgba(0,180,255,0.55)", letterSpacing:"0.08em", lineHeight:1.9, textAlign:"center", animation:"fadeSlide 1s 0.7s ease both", opacity:0, maxWidth:336, width:"100%" }}>
           {[
             "[OK]  agent runtime initialized",
             "[>>]  autonomous systems online...",
           ].map((line, i) => (
-            <div key={i} style={{ color: i === 1 ? `rgba(79,195,247,0.45)` : "rgba(0,180,255,0.35)" }}>
+            <div key={i} style={{ color: i === 1 ? `rgba(79,195,247,0.65)` : "rgba(0,180,255,0.55)" }}>
               {line}
             </div>
           ))}
