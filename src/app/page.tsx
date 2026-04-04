@@ -217,13 +217,13 @@ export default function Home() {
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", gap:0, textAlign:"center", padding:"0 16px", width:"100%" }}>
 
         {/* ── Top status bar ── */}
-        <div style={{ display:"flex", gap:"clamp(8px,3vw,24px)", marginBottom:36, flexWrap:"wrap", justifyContent:"center", animation:"fadeSlide 0.6s ease both" }}>
+        <div style={{ display:"flex", gap:"clamp(6px,2vw,24px)", marginBottom:36, flexWrap:"nowrap", justifyContent:"center", animation:"fadeSlide 0.6s ease both" }}>
           {[
             { label:"SYS", value:"ONLINE" },
             { label:"MODE", value:"AGENTIC" },
             { label:"UPTIME", value:uptime },
           ].map((item, i) => (
-            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(11px,2vw,11px)", letterSpacing:"0.15em", padding:"4px 10px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
+            <div key={i} style={{ fontFamily:"monospace", fontSize:"clamp(9px,2vw,11px)", letterSpacing:"0.12em", padding:"3px 6px", border:`1px solid ${DIM}`, borderRadius:3, background:"rgba(0,180,255,0.04)", color:DIM, display:"flex", gap:6, alignItems:"center" }}>
               <span style={{ color:"rgba(0,180,255,0.4)" }}>{item.label}</span>
               <span style={{ color: item.label === "SYS" ? GREEN : DIM }}>{item.value}</span>
               {item.label === "SYS" && <span style={{ color:GREEN, animation:"blink 1s step-end infinite", fontSize:8 }}>●</span>}
