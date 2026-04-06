@@ -8,7 +8,17 @@ const DIM = "rgba(0,180,255,0.7)";
 
 // Eye reference center (for offset calculation)
 const refCenter = { x: 120.32, y: 93.67 };
-const EYE_MAX_R = 12;
+
+// Eye motion tuning constants
+const EYE_BASE_MAX_R = 12;
+const EYE_RANGE_MULTIPLIER = 1.2; // +20% movement range
+const EYE_MAX_R = EYE_BASE_MAX_R * EYE_RANGE_MULTIPLIER;
+const EYE_DESKTOP_RADIUS_FACTOR = 0.8;
+const EYE_FOLLOW_STIFFNESS = 0.12;
+const EYE_FOLLOW_DAMPING = 0.78;
+const EYE_VELOCITY_MAX = 2.4;
+const EYE_CLOSE_DISTANCE = 60;
+const EYE_MOBILE_RANDOM_INTERVAL_MS = 2500;
 
 // Original font paths extracted from vooy-logo-path.svg
 const V_PATH = "M34.0234375 126.25 10.703125 60.7421875H35.4296875L43.92578125 90.625Q45.21484375 95.078125 46.26953125 99.6484375Q47.32421875 104.21875 48.26171875 109.140625Q49.19921875 104.21875 50.224609375 99.677734375Q51.25 95.13671875 52.48046875 90.625L60.7421875 60.7421875H85.1171875L61.6796875 126.25Z";
@@ -23,10 +33,6 @@ const O2_INNER = "M192.37890625 109.84375Q196.94921875 109.84375 199.55664062500
 
 const Y_PATH = "M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 133.046875Q246.80078125 134.5703125 250.140625 132.900390625Q253.48046875 131.23046875 252.42578125 128.18359375L251.78125 126.30859375L227.52343750 60.7421875H252.25L260.74609375 90.625Q261.91796875 94.78515625 262.708984375 98.974609375Q263.5 103.1640625 264.203125 107.6171875Q265.19921875 103.10546875 266.283203125 98.916015625Q267.3671875 94.7265625 268.65625 90.625L278.03125 60.7421875H302.40625L275.39453125 132.2265625Q273.40234375 137.55859375 270.00390625 141.865234375Q266.60546875 146.171875 261.185546875 148.69140625Q255.765625 151.2109375 247.50390625 151.2109375Q243.46093750 151.2109375 239.53515625 150.625Q235.609375 150.0390625 232.85546875 148.984375Z";
 
-// o centers for eye tracking
-const O1_CENTER = { x: 120.32, y: 93.67 };
-const O2_CENTER = { x: 192.32, y: 93.67 };
-
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [litLetters, setLitLetters] = useState<boolean[]>([false,false,false,false]);
@@ -37,6 +43,7 @@ export default function Home() {
   const mousePos = useRef({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
   const eyeOffsetRef = useRef({ x: 0, y: 0 });
+  const eyeVelocityRef = useRef({ x: 0, y: 0 });
 
   // Typewriter effect for command line
   const CMD = "initialize --mode=agentic --level=autonomous";
@@ -119,7 +126,7 @@ export default function Home() {
 
         if (isMobile) {
           // Mobile: random movement every 2.5s
-          if (now - lastRandomChange > 2500) {
+          if (now - lastRandomChange > EYE_MOBILE_RANDOM_INTERVAL_MS) {
             lastRandomChange = now;
             randomTarget = {
               x: (Math.random() * 2 - 1) * EYE_MAX_R,
@@ -131,17 +138,36 @@ export default function Home() {
         } else {
           // Desktop: follow mouse direction, but move toward center when mouse is close
           const dist = Math.hypot(mouseInSvgX - refCenter.x, mouseInSvgY - refCenter.y);
-          const r = Math.min(dist / 60 * EYE_MAX_R, EYE_MAX_R * 0.8);
+          const r = Math.min(
+            (dist / EYE_CLOSE_DISTANCE) * EYE_MAX_R,
+            EYE_MAX_R * EYE_DESKTOP_RADIUS_FACTOR,
+          );
           const ang = Math.atan2(mouseInSvgY - refCenter.y, mouseInSvgX - refCenter.x);
           targetX = Math.cos(ang) * r;
           targetY = Math.sin(ang) * r;
         }
 
-        const next = {
-          x: (prev.x ?? 0) * 0.72 + targetX * 0.28,
-          y: (prev.y ?? 0) * 0.72 + targetY * 0.28,
+        const prevVelocity = eyeVelocityRef.current;
+        let nextVelocity = {
+          x: (prevVelocity.x + (targetX - prev.x) * EYE_FOLLOW_STIFFNESS) * EYE_FOLLOW_DAMPING,
+          y: (prevVelocity.y + (targetY - prev.y) * EYE_FOLLOW_STIFFNESS) * EYE_FOLLOW_DAMPING,
         };
 
+        const velocityMagnitude = Math.hypot(nextVelocity.x, nextVelocity.y);
+        if (velocityMagnitude > EYE_VELOCITY_MAX) {
+          const scale = EYE_VELOCITY_MAX / velocityMagnitude;
+          nextVelocity = {
+            x: nextVelocity.x * scale,
+            y: nextVelocity.y * scale,
+          };
+        }
+
+        const next = {
+          x: prev.x + nextVelocity.x,
+          y: prev.y + nextVelocity.y,
+        };
+
+        eyeVelocityRef.current = nextVelocity;
         eyeOffsetRef.current = next;
         setEyeOffset(next);
       }
