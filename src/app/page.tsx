@@ -14,19 +14,21 @@ const EYE_BASE_MAX_R = 12;
 const EYE_RANGE_MULTIPLIER = 1.2; // +20% movement range
 const EYE_MAX_R = EYE_BASE_MAX_R * EYE_RANGE_MULTIPLIER;
 const EYE_DESKTOP_RADIUS_FACTOR = 0.8;
-const EYE_FOLLOW_STIFFNESS = 0.115;
-const EYE_FOLLOW_DAMPING = 0.8;
-const EYE_VELOCITY_MAX = 2.2;
+const EYE_FOLLOW_STIFFNESS = 0.098;
+const EYE_FOLLOW_DAMPING = 0.835;
+const EYE_VELOCITY_MAX = 2.0;
 const EYE_CLOSE_DISTANCE = 60;
 const EYE_MOBILE_RANDOM_INTERVAL_MS = 2500;
-const EYE_SETTLE_PULL = 0.012;
-const EYE_MICRO_SWAY_X = 0.55;
-const EYE_MICRO_SWAY_Y = 0.35;
-const EYE_MICRO_SWAY_SPEED_X = 0.0017;
-const EYE_MICRO_SWAY_SPEED_Y = 0.0023;
-const EYE_NEAR_POINTER_SOFTEN = 0.7;
-const EYE_EDGE_SOFTNESS = 0.94;
-const EYE_INTEREST_BOOST = 0.1;
+const EYE_SETTLE_PULL = 0.011;
+const EYE_MICRO_SWAY_X = 0.72;
+const EYE_MICRO_SWAY_Y = 0.48;
+const EYE_MICRO_SWAY_SPEED_X = 0.00155;
+const EYE_MICRO_SWAY_SPEED_Y = 0.00205;
+const EYE_NEAR_POINTER_SOFTEN = 0.64;
+const EYE_EDGE_SOFTNESS = 0.93;
+const EYE_INTEREST_BOOST = 0.12;
+const EYE_CUTE_BOUNCE = 0.08;
+const EYE_CUTE_BOUNCE_SPEED = 0.0032;
 
 // Original font paths extracted from vooy-logo-path.svg
 const V_PATH = "M34.0234375 126.25 10.703125 60.7421875H35.4296875L43.92578125 90.625Q45.21484375 95.078125 46.26953125 99.6484375Q47.32421875 104.21875 48.26171875 109.140625Q49.19921875 104.21875 50.224609375 99.677734375Q51.25 95.13671875 52.48046875 90.625L60.7421875 60.7421875H85.1171875L61.6796875 126.25Z";
@@ -170,8 +172,9 @@ export default function Home() {
           const swayX = Math.sin(now * EYE_MICRO_SWAY_SPEED_X) * EYE_MICRO_SWAY_X;
           const swayY = Math.cos(now * EYE_MICRO_SWAY_SPEED_Y) * EYE_MICRO_SWAY_Y;
           const interest = Math.min(dist / 220, 1) * EYE_INTEREST_BOOST;
+          const cuteBounce = Math.sin(now * EYE_CUTE_BOUNCE_SPEED) * EYE_CUTE_BOUNCE;
           targetX = Math.cos(ang) * r * (1 + interest) + swayX;
-          targetY = Math.sin(ang) * r * (1 + interest * 0.6) + swayY;
+          targetY = Math.sin(ang) * r * (1 + interest * 0.6) + swayY + cuteBounce;
         }
 
         const settledTarget = clampToEyeRange(
