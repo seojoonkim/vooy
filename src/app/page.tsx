@@ -14,11 +14,19 @@ const EYE_BASE_MAX_R = 12;
 const EYE_RANGE_MULTIPLIER = 1.2; // +20% movement range
 const EYE_MAX_R = EYE_BASE_MAX_R * EYE_RANGE_MULTIPLIER;
 const EYE_DESKTOP_RADIUS_FACTOR = 0.8;
-const EYE_FOLLOW_STIFFNESS = 0.12;
-const EYE_FOLLOW_DAMPING = 0.78;
-const EYE_VELOCITY_MAX = 2.4;
+const EYE_FOLLOW_STIFFNESS = 0.115;
+const EYE_FOLLOW_DAMPING = 0.8;
+const EYE_VELOCITY_MAX = 2.2;
 const EYE_CLOSE_DISTANCE = 60;
 const EYE_MOBILE_RANDOM_INTERVAL_MS = 2500;
+const EYE_SETTLE_PULL = 0.012;
+const EYE_MICRO_SWAY_X = 0.55;
+const EYE_MICRO_SWAY_Y = 0.35;
+const EYE_MICRO_SWAY_SPEED_X = 0.0017;
+const EYE_MICRO_SWAY_SPEED_Y = 0.0023;
+const EYE_NEAR_POINTER_SOFTEN = 0.7;
+const EYE_EDGE_SOFTNESS = 0.94;
+const EYE_INTEREST_BOOST = 0.1;
 
 // Original font paths extracted from vooy-logo-path.svg
 const V_PATH = "M34.0234375 126.25 10.703125 60.7421875H35.4296875L43.92578125 90.625Q45.21484375 95.078125 46.26953125 99.6484375Q47.32421875 104.21875 48.26171875 109.140625Q49.19921875 104.21875 50.224609375 99.677734375Q51.25 95.13671875 52.48046875 90.625L60.7421875 60.7421875H85.1171875L61.6796875 126.25Z";
@@ -110,6 +118,13 @@ export default function Home() {
     let lastRandomChange = 0;
     let rafId = 0;
 
+    const clampToEyeRange = (x: number, y: number, limit = EYE_MAX_R * EYE_EDGE_SOFTNESS) => {
+      const mag = Math.hypot(x, y);
+      if (mag <= limit || mag === 0) return { x, y };
+      const scale = limit / mag;
+      return { x: x * scale, y: y * scale };
+    };
+
     const animate = () => {
       const now = Date.now();
       const svg = svgRef.current;
@@ -125,32 +140,49 @@ export default function Home() {
         let targetX: number, targetY: number;
 
         if (isMobile) {
-          // Mobile: random movement every 2.5s
+          // Mobile: random movement every 2.5s, but keep it soft and alive.
           if (now - lastRandomChange > EYE_MOBILE_RANDOM_INTERVAL_MS) {
             lastRandomChange = now;
+            const randomAngle = Math.random() * Math.PI * 2;
+            const randomRadius = (0.35 + Math.random() * 0.45) * EYE_MAX_R;
             randomTarget = {
-              x: (Math.random() * 2 - 1) * EYE_MAX_R,
-              y: (Math.random() * 2 - 1) * EYE_MAX_R,
+              x: Math.cos(randomAngle) * randomRadius,
+              y: Math.sin(randomAngle) * randomRadius,
             };
           }
           targetX = randomTarget.x;
           targetY = randomTarget.y;
         } else {
-          // Desktop: follow mouse direction, but move toward center when mouse is close
-          const dist = Math.hypot(mouseInSvgX - refCenter.x, mouseInSvgY - refCenter.y);
+          // Desktop: follow pointer with softer near-center response and a tiny organic sway.
+          const dx = mouseInSvgX - refCenter.x;
+          const dy = mouseInSvgY - refCenter.y;
+          const dist = Math.hypot(dx, dy);
+          const normalizedDist = Math.min(dist / EYE_CLOSE_DISTANCE, 1);
+          const easedDist = 1 - Math.pow(1 - normalizedDist, 2);
+          const nearPointerFactor = normalizedDist < 1
+            ? EYE_NEAR_POINTER_SOFTEN + (1 - EYE_NEAR_POINTER_SOFTEN) * easedDist
+            : 1;
           const r = Math.min(
-            (dist / EYE_CLOSE_DISTANCE) * EYE_MAX_R,
+            easedDist * EYE_MAX_R * nearPointerFactor,
             EYE_MAX_R * EYE_DESKTOP_RADIUS_FACTOR,
           );
-          const ang = Math.atan2(mouseInSvgY - refCenter.y, mouseInSvgX - refCenter.x);
-          targetX = Math.cos(ang) * r;
-          targetY = Math.sin(ang) * r;
+          const ang = Math.atan2(dy, dx);
+          const swayX = Math.sin(now * EYE_MICRO_SWAY_SPEED_X) * EYE_MICRO_SWAY_X;
+          const swayY = Math.cos(now * EYE_MICRO_SWAY_SPEED_Y) * EYE_MICRO_SWAY_Y;
+          const interest = Math.min(dist / 220, 1) * EYE_INTEREST_BOOST;
+          targetX = Math.cos(ang) * r * (1 + interest) + swayX;
+          targetY = Math.sin(ang) * r * (1 + interest * 0.6) + swayY;
         }
+
+        const settledTarget = clampToEyeRange(
+          targetX - prev.x * EYE_SETTLE_PULL,
+          targetY - prev.y * EYE_SETTLE_PULL,
+        );
 
         const prevVelocity = eyeVelocityRef.current;
         let nextVelocity = {
-          x: (prevVelocity.x + (targetX - prev.x) * EYE_FOLLOW_STIFFNESS) * EYE_FOLLOW_DAMPING,
-          y: (prevVelocity.y + (targetY - prev.y) * EYE_FOLLOW_STIFFNESS) * EYE_FOLLOW_DAMPING,
+          x: (prevVelocity.x + (settledTarget.x - prev.x) * EYE_FOLLOW_STIFFNESS) * EYE_FOLLOW_DAMPING,
+          y: (prevVelocity.y + (settledTarget.y - prev.y) * EYE_FOLLOW_STIFFNESS) * EYE_FOLLOW_DAMPING,
         };
 
         const velocityMagnitude = Math.hypot(nextVelocity.x, nextVelocity.y);
@@ -162,10 +194,10 @@ export default function Home() {
           };
         }
 
-        const next = {
-          x: prev.x + nextVelocity.x,
-          y: prev.y + nextVelocity.y,
-        };
+        const next = clampToEyeRange(
+          prev.x + nextVelocity.x,
+          prev.y + nextVelocity.y,
+        );
 
         eyeVelocityRef.current = nextVelocity;
         eyeOffsetRef.current = next;
