@@ -299,7 +299,7 @@ export default function Home() {
             ref={svgRef}
             viewBox="0 0 313.1094 165.1953"
             style={{
-              width: "clamp(304.5px,60.9vw,663.6px)",
+              width: "clamp(336px,67vw,730px)",
               height: "auto",
               display: "block",
               filter: allLit
