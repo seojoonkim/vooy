@@ -45,7 +45,6 @@ const Y_PATH = "M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 1
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [litLetters, setLitLetters] = useState<boolean[]>([false,false,false,false]);
   const [allLit, setAllLit] = useState(false);
   const [typed, setTyped] = useState("");
   const [uptime, setUptime] = useState("00:00:00");
@@ -82,22 +81,9 @@ export default function Home() {
     return () => clearInterval(iv);
   }, []);
 
-  // Letter-by-letter light up sequence (one-time, stays lit)
+  // Reveal completion state for post-logo glow / eye animation
   useEffect(() => {
-    const STEP = 600;
-
-    function runCycle() {
-      for (let i = 0; i < 4; i++) {
-        setTimeout(() => {
-          setLitLetters(prev => { const n=[...prev]; n[i]=true; return n; });
-          if (i === 3) {
-            setTimeout(() => setAllLit(true), 60);
-            // 리셋 없음 - 여기서 끝
-          }
-        }, i * STEP);
-      }
-    }
-    const t = setTimeout(runCycle, 900);
+    const t = setTimeout(() => setAllLit(true), 1900);
     return () => clearTimeout(t);
   }, []);
 
@@ -340,37 +326,33 @@ export default function Home() {
             <path
               d={V_PATH}
               fillRule="evenodd"
-              fill={litLetters[0] ? "white" : "rgba(255,255,255,0.08)"}
-              filter={litLetters[0] ? "url(#letterGlow)" : undefined}
-              style={{ transition: "fill 0.5s ease" }}
+              fill="white"
+              filter="url(#letterGlow)"
+              style={{ opacity: 0, animation: "letterIn 0.5s 0.3s ease forwards" }}
             />
             {/* o1 - outer shape with mask for transparent moving hole */}
-            <g filter={litLetters[1] ? "url(#letterGlow)" : undefined}>
+            <g filter="url(#letterGlow)" style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards" }}>
               <path
                 d={O1_OUTER}
-                fill={litLetters[1] ? "white" : "rgba(255,255,255,0.08)"}
+                fill="white"
                 mask="url(#o1mask)"
-                style={{ transition: "fill 0.5s ease" }}
               />
-
             </g>
             {/* o2 - outer shape with mask for transparent moving hole */}
-            <g filter={litLetters[2] ? "url(#letterGlow)" : undefined}>
+            <g filter="url(#letterGlow)" style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards" }}>
               <path
                 d={O2_OUTER}
-                fill={litLetters[2] ? "white" : "rgba(255,255,255,0.08)"}
+                fill="white"
                 mask="url(#o2mask)"
-                style={{ transition: "fill 0.5s ease" }}
               />
-
             </g>
             {/* y */}
             <path
               d={Y_PATH}
               fillRule="evenodd"
-              fill={litLetters[3] ? "white" : "rgba(255,255,255,0.08)"}
-              filter={litLetters[3] ? "url(#letterGlow)" : undefined}
-              style={{ transition: "fill 0.5s ease" }}
+              fill="white"
+              filter="url(#letterGlow)"
+              style={{ opacity: 0, animation: "letterIn 0.5s 1.35s ease forwards" }}
             />
           </svg>
           {/* Underline */}
@@ -417,6 +399,10 @@ export default function Home() {
         @keyframes blink {
           0%,100% { opacity:1; }
           50%      { opacity:0; }
+        }
+        @keyframes letterIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         @keyframes breathe {
           0%,100% { opacity:1;    text-shadow:0 0 25px rgba(0,180,255,0.2),0 0 50px rgba(0,180,255,0.075); }
