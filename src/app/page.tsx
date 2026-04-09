@@ -289,16 +289,15 @@ export default function Home() {
               height: "auto",
               display: "block",
               filter: allLit
-                ? "drop-shadow(0 0 3px rgba(0,180,255,0.15)) drop-shadow(0 0 6px rgba(0,180,255,0.075))"
+                ? "drop-shadow(0 0 1px rgba(0,180,255,0.08))"
                 : "none",
               transition: "filter 1.2s ease",
             }}
           >
             <defs>
-              <filter id="letterGlow" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
+              <filter id="letterGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="0.35" result="blur"/>
                 <feMerge>
-                  <feMergeNode in="blur"/>
                   <feMergeNode in="blur"/>
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
@@ -356,12 +355,12 @@ export default function Home() {
             />
           </svg>
           {/* Underline */}
-          <div style={{ marginTop:6, height:2, background:`linear-gradient(to right, transparent, ${GREEN}, ${CYAN}, transparent)`, borderRadius:2, animation:"underlineGlow 8s ease-in-out infinite" }} />
+          <div style={{ marginTop:6, height:2, background:`linear-gradient(to right, transparent, ${GREEN}, ${CYAN}, transparent)`, borderRadius:2, animation:"underlineGlow 8s ease-in-out infinite", opacity:0.22 }} />
         </div>
 
         {/* ── Catchphrase ── */}
         <div style={{ display:"flex", flexDirection:"column", gap:11, animation:"fadeSlide 0.9s 0.3s ease both", opacity:0, marginTop:39 }}>
-          <p style={{ fontWeight:700, fontSize:"clamp(16.8px,3.675vw,21px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 12px rgba(0,180,255,0.8), 0 0 28px rgba(0,180,255,0.5), 0 0 50px rgba(0,180,255,0.25)`, margin:0 }}>
+          <p style={{ fontWeight:700, fontSize:"clamp(16.8px,3.675vw,21px)", letterSpacing:"0.12em", color:GREEN, textShadow:`0 0 4px rgba(0,180,255,0.18)`, margin:0 }}>
             Virtual Oracle Of You
           </p>
         </div>
@@ -411,9 +410,9 @@ export default function Home() {
           75%     { opacity:0.65; text-shadow:0 0 15px rgba(0,180,255,0.1); }
         }
         @keyframes underlineGlow {
-          0%   { opacity:0.08; background-size:20% 100%; background-position:0% center; }
-          50%  { opacity:0.45; background-size:100% 100%; background-position:50% center; }
-          100% { opacity:0.08; background-size:20% 100%; background-position:100% center; }
+          0%   { opacity:0.04; background-size:20% 100%; background-position:0% center; }
+          50%  { opacity:0.16; background-size:100% 100%; background-position:50% center; }
+          100% { opacity:0.04; background-size:20% 100%; background-position:100% center; }
         }
         @media (max-width:480px) {
           main { padding:24px 0; }
