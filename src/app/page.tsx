@@ -51,8 +51,6 @@ export default function Home() {
   const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 });
   const [blinkScale, setBlinkScale] = useState(1);
   const [bumpedLetter, setBumpedLetter] = useState<string | null>(null);
-  const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
-  const [cursorHover, setCursorHover] = useState(false);
   const mousePos = useRef({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -112,15 +110,6 @@ export default function Home() {
     return () => clearTimeout(blinkTimeout);
   }, [allLit]);
 
-  // Custom cursor
-  useEffect(() => {
-    if (isMobileRef.current) return;
-    const handleMove = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMove);
-    return () => window.removeEventListener('mousemove', handleMove);
-  }, []);
 
   // Parallax
   useEffect(() => {
@@ -307,25 +296,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main style={{ position:"relative", height:"100dvh", minHeight:"100dvh", maxHeight:"100dvh", background:"linear-gradient(160deg,#050a0d 0%,#020810 55%,#05050a 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif", cursor: isMobileRef.current ? 'auto' : 'none' }}>
-      {/* Custom cursor */}
-      {!isMobileRef.current && (
-        <div style={{
-          position: 'fixed',
-          left: cursorPos.x,
-          top: cursorPos.y,
-          width: cursorHover ? 14 : 6,
-          height: cursorHover ? 14 : 6,
-          borderRadius: '50%',
-          background: GREEN,
-          boxShadow: `0 0 ${cursorHover ? 12 : 6}px rgba(0,212,255,0.5)`,
-          pointerEvents: 'none',
-          zIndex: 10000,
-          transform: 'translate(-50%, -50%)',
-          transition: 'width 0.2s, height 0.2s, box-shadow 0.2s',
-          mixBlendMode: 'screen',
-        }} />
-      )}
+    <main style={{ position:"relative", height:"100dvh", minHeight:"100dvh", maxHeight:"100dvh", background:"linear-gradient(160deg,#050a0d 0%,#020810 55%,#05050a 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif" }}>
       <canvas ref={canvasRef} style={{ position:"absolute", inset:0, pointerEvents:"none" }} />
 
       {/* Vignette */}
@@ -363,7 +334,7 @@ export default function Home() {
                 ? "drop-shadow(0 0 1px rgba(0,180,255,0.08))"
                 : "none",
               transition: "filter 1.2s ease",
-              cursor: isMobileRef.current ? 'auto' : 'none',
+              
             }}
           >
             <defs>
@@ -395,9 +366,9 @@ export default function Home() {
             </defs>
             {/* v */}
             <g
-              onMouseEnter={() => { setBumpedLetter('v'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
-              onMouseLeave={() => setCursorHover(false)}
-              style={{ transform: bumpedLetter === 'v' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '50px 93px', transition: bumpedLetter === 'v' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+              onMouseEnter={() => { setBumpedLetter('v'); setTimeout(() => setBumpedLetter(null), 120); }}
+              
+              style={{ transform: bumpedLetter === 'v' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '50px 93px', transition: bumpedLetter === 'v' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
             >
               <path
                 d={V_PATH}
@@ -410,9 +381,9 @@ export default function Home() {
             {/* o1 - outer shape with mask for transparent moving hole */}
             <g
               filter="url(#letterGlow)"
-              onMouseEnter={() => { setBumpedLetter('o1'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
-              onMouseLeave={() => setCursorHover(false)}
-              style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards", transform: bumpedLetter === 'o1' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '120px 93px', transition: bumpedLetter === 'o1' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+              onMouseEnter={() => { setBumpedLetter('o1'); setTimeout(() => setBumpedLetter(null), 120); }}
+              
+              style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards", transform: bumpedLetter === 'o1' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '120px 93px', transition: bumpedLetter === 'o1' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
             >
               <path
                 d={O1_OUTER}
@@ -423,9 +394,9 @@ export default function Home() {
             {/* o2 - outer shape with mask for transparent moving hole */}
             <g
               filter="url(#letterGlow)"
-              onMouseEnter={() => { setBumpedLetter('o2'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
-              onMouseLeave={() => setCursorHover(false)}
-              style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards", transform: bumpedLetter === 'o2' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '192px 93px', transition: bumpedLetter === 'o2' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+              onMouseEnter={() => { setBumpedLetter('o2'); setTimeout(() => setBumpedLetter(null), 120); }}
+              
+              style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards", transform: bumpedLetter === 'o2' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '192px 93px', transition: bumpedLetter === 'o2' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
             >
               <path
                 d={O2_OUTER}
@@ -435,9 +406,9 @@ export default function Home() {
             </g>
             {/* y */}
             <g
-              onMouseEnter={() => { setBumpedLetter('y'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
-              onMouseLeave={() => setCursorHover(false)}
-              style={{ transform: bumpedLetter === 'y' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '260px 93px', transition: bumpedLetter === 'y' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+              onMouseEnter={() => { setBumpedLetter('y'); setTimeout(() => setBumpedLetter(null), 120); }}
+              
+              style={{ transform: bumpedLetter === 'y' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '260px 93px', transition: bumpedLetter === 'y' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
             >
               <path
                 d={Y_PATH}
