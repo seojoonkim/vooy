@@ -48,7 +48,6 @@ export default function Home() {
   const [allLit, setAllLit] = useState(false);
   const [typed, setTyped] = useState("");
   const [uptime, setUptime] = useState("00:00:00");
-  const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 });
   const [blinkScale, setBlinkScale] = useState(1);
   const [bumpedLetter, setBumpedLetter] = useState<string | null>(null);
   const [eyeBumped, setEyeBumped] = useState(false);
@@ -58,6 +57,8 @@ export default function Home() {
   const eyeOffsetRef = useRef({ x: 0, y: 0 });
   const eyeVelocityRef = useRef({ x: 0, y: 0 });
   const isMobileRef = useRef(false);
+  const o1InnerRef = useRef<SVGPathElement>(null);
+  const o2InnerRef = useRef<SVGPathElement>(null);
 
   // Typewriter effect for command line
   const CMD = "initialize --mode=agentic --level=autonomous";
@@ -114,6 +115,16 @@ export default function Home() {
     return () => clearTimeout(blinkTimeout);
   }, [allLit]);
 
+
+  // Sync blink + bump to DOM when React state changes
+  useEffect(() => {
+    const bumpMul = eyeBumped ? 1.5 : 1;
+    const off = eyeOffsetRef.current;
+    const tx1 = o1InnerRef.current;
+    const tx2 = o2InnerRef.current;
+    if (tx1) tx1.setAttribute('transform', `translate(${off.x * bumpMul}, ${off.y * bumpMul}) scale(1,${blinkScale})`);
+    if (tx2) tx2.setAttribute('transform', `translate(${off.x * bumpMul}, ${off.y * bumpMul}) scale(1,${blinkScale})`);
+  }, [blinkScale, eyeBumped]);
 
   // Parallax
   useEffect(() => {
@@ -236,7 +247,13 @@ export default function Home() {
 
         eyeVelocityRef.current = nextVelocity;
         eyeOffsetRef.current = next;
-        setEyeOffset(next);
+
+        // Direct DOM update — no React re-render
+        const bumpMul = eyeBumped ? 1.5 : 1;
+        const tx1 = o1InnerRef.current;
+        const tx2 = o2InnerRef.current;
+        if (tx1) tx1.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${blinkScale})`);
+        if (tx2) tx2.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${blinkScale})`);
       }
 
       rafId = requestAnimationFrame(animate);
@@ -360,11 +377,11 @@ export default function Home() {
               {/* Masks for transparent holes that move with eye offset + blink */}
               <mask id="o1mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="120.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
+                <path ref={o1InnerRef} d={O1_INNER} fill="black" transform={`translate(0, 0) scale(1,1)`} transform-origin="120.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
               </mask>
               <mask id="o2mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="192.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
+                <path ref={o2InnerRef} d={O2_INNER} fill="black" transform={`translate(0, 0) scale(1,1)`} transform-origin="192.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
               </mask>
 
             </defs>
