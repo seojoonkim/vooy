@@ -51,6 +51,7 @@ export default function Home() {
   const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 });
   const [blinkScale, setBlinkScale] = useState(1);
   const [bumpedLetter, setBumpedLetter] = useState<string | null>(null);
+  const [eyeBumped, setEyeBumped] = useState(false);
   const mousePos = useRef({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -356,19 +357,19 @@ export default function Home() {
               {/* Masks for transparent holes that move with eye offset + blink */}
               <mask id="o1mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y}) scale(1,${blinkScale})`} transform-origin="120.38 93.55" />
+                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="120.38 93.55" />
               </mask>
               <mask id="o2mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y}) scale(1,${blinkScale})`} transform-origin="192.38 93.55" />
+                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="192.38 93.55" />
               </mask>
 
             </defs>
             {/* v */}
             <g
-              onMouseEnter={() => { setBumpedLetter('v'); setTimeout(() => setBumpedLetter(null), 120); }}
+              onMouseEnter={() => { setBumpedLetter('v'); setTimeout(() => setBumpedLetter(null), 400); }}
               
-              style={{ transform: bumpedLetter === 'v' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '50px 93px', transition: bumpedLetter === 'v' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
+              style={{ transform: bumpedLetter === 'v' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '50px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
                 d={V_PATH}
@@ -381,9 +382,9 @@ export default function Home() {
             {/* o1 - outer shape with mask for transparent moving hole */}
             <g
               filter="url(#letterGlow)"
-              onMouseEnter={() => { setBumpedLetter('o1'); setTimeout(() => setBumpedLetter(null), 120); }}
+              onMouseEnter={() => { setBumpedLetter('o1'); setEyeBumped(true); setTimeout(() => { setBumpedLetter(null); setEyeBumped(false); }, 400); }}
               
-              style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards", transform: bumpedLetter === 'o1' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '120px 93px', transition: bumpedLetter === 'o1' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
+              style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards", transform: bumpedLetter === 'o1' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '120px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
                 d={O1_OUTER}
@@ -394,9 +395,9 @@ export default function Home() {
             {/* o2 - outer shape with mask for transparent moving hole */}
             <g
               filter="url(#letterGlow)"
-              onMouseEnter={() => { setBumpedLetter('o2'); setTimeout(() => setBumpedLetter(null), 120); }}
+              onMouseEnter={() => { setBumpedLetter('o2'); setEyeBumped(true); setTimeout(() => { setBumpedLetter(null); setEyeBumped(false); }, 400); }}
               
-              style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards", transform: bumpedLetter === 'o2' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '192px 93px', transition: bumpedLetter === 'o2' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
+              style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards", transform: bumpedLetter === 'o2' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '192px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
                 d={O2_OUTER}
@@ -406,9 +407,9 @@ export default function Home() {
             </g>
             {/* y */}
             <g
-              onMouseEnter={() => { setBumpedLetter('y'); setTimeout(() => setBumpedLetter(null), 120); }}
+              onMouseEnter={() => { setBumpedLetter('y'); setTimeout(() => setBumpedLetter(null), 400); }}
               
-              style={{ transform: bumpedLetter === 'y' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '260px 93px', transition: bumpedLetter === 'y' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out' }}
+              style={{ transform: bumpedLetter === 'y' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '260px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
                 d={Y_PATH}
