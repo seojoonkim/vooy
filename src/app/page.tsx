@@ -49,10 +49,16 @@ export default function Home() {
   const [typed, setTyped] = useState("");
   const [uptime, setUptime] = useState("00:00:00");
   const [eyeOffset, setEyeOffset] = useState({ x: 0, y: 0 });
+  const [blinkScale, setBlinkScale] = useState(1);
+  const [bumpedLetter, setBumpedLetter] = useState<string | null>(null);
+  const [cursorPos, setCursorPos] = useState({ x: -100, y: -100 });
+  const [cursorHover, setCursorHover] = useState(false);
   const mousePos = useRef({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
   const eyeOffsetRef = useRef({ x: 0, y: 0 });
   const eyeVelocityRef = useRef({ x: 0, y: 0 });
+  const isMobileRef = useRef(false);
 
   // Typewriter effect for command line
   const CMD = "initialize --mode=agentic --level=autonomous";
@@ -84,7 +90,54 @@ export default function Home() {
   // Reveal completion state for post-logo glow / eye animation
   useEffect(() => {
     const t = setTimeout(() => setAllLit(true), 1900);
+    isMobileRef.current = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
     return () => clearTimeout(t);
+  }, []);
+
+  // Blink animation
+  useEffect(() => {
+    if (!allLit) return;
+    let blinkTimeout: ReturnType<typeof setTimeout>;
+    const scheduleBlink = () => {
+      const delay = 4000 + Math.random() * 3000; // 4-7s
+      blinkTimeout = setTimeout(() => {
+        setBlinkScale(0.05);
+        setTimeout(() => {
+          setBlinkScale(1);
+          scheduleBlink();
+        }, 150);
+      }, delay);
+    };
+    scheduleBlink();
+    return () => clearTimeout(blinkTimeout);
+  }, [allLit]);
+
+  // Custom cursor
+  useEffect(() => {
+    if (isMobileRef.current) return;
+    const handleMove = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener('mousemove', handleMove);
+    return () => window.removeEventListener('mousemove', handleMove);
+  }, []);
+
+  // Parallax
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          hero.style.transform = `translateY(${window.scrollY * -0.15}px)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   // Mouse tracking
@@ -254,7 +307,25 @@ export default function Home() {
   }, []);
 
   return (
-    <main style={{ position:"relative", height:"100dvh", minHeight:"100dvh", maxHeight:"100dvh", background:"linear-gradient(160deg,#050a0d 0%,#020810 55%,#05050a 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif" }}>
+    <main style={{ position:"relative", height:"100dvh", minHeight:"100dvh", maxHeight:"100dvh", background:"linear-gradient(160deg,#050a0d 0%,#020810 55%,#05050a 100%)", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", overflow:"hidden", fontFamily:"'Helvetica Neue',Helvetica,Arial,sans-serif", cursor: isMobileRef.current ? 'auto' : 'none' }}>
+      {/* Custom cursor */}
+      {!isMobileRef.current && (
+        <div style={{
+          position: 'fixed',
+          left: cursorPos.x,
+          top: cursorPos.y,
+          width: cursorHover ? 14 : 6,
+          height: cursorHover ? 14 : 6,
+          borderRadius: '50%',
+          background: GREEN,
+          boxShadow: `0 0 ${cursorHover ? 12 : 6}px rgba(0,212,255,0.5)`,
+          pointerEvents: 'none',
+          zIndex: 10000,
+          transform: 'translate(-50%, -50%)',
+          transition: 'width 0.2s, height 0.2s, box-shadow 0.2s',
+          mixBlendMode: 'screen',
+        }} />
+      )}
       <canvas ref={canvasRef} style={{ position:"absolute", inset:0, pointerEvents:"none" }} />
 
       {/* Vignette */}
@@ -280,7 +351,7 @@ export default function Home() {
         </div>
 
         {/* ── LOGO (inline SVG) ── */}
-        <div style={{ position:"relative", animation:"fadeSlide 0.8s 0.15s ease both", opacity:0 }}>
+        <div ref={heroRef} style={{ position:"relative", animation:"fadeSlide 0.8s 0.15s ease both", opacity:0, willChange:"transform" }}>
           <svg
             ref={svgRef}
             viewBox="0 0 313.1094 165.1953"
@@ -292,6 +363,7 @@ export default function Home() {
                 ? "drop-shadow(0 0 1px rgba(0,180,255,0.08))"
                 : "none",
               transition: "filter 1.2s ease",
+              cursor: isMobileRef.current ? 'auto' : 'none',
             }}
           >
             <defs>
@@ -310,27 +382,38 @@ export default function Home() {
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
               </filter>
-              {/* Masks for transparent holes that move with eye offset */}
+              {/* Masks for transparent holes that move with eye offset + blink */}
               <mask id="o1mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
+                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y}) scale(1,${blinkScale})`} transform-origin="120.38 93.55" />
               </mask>
               <mask id="o2mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y})`} />
+                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x}, ${eyeOffset.y}) scale(1,${blinkScale})`} transform-origin="192.38 93.55" />
               </mask>
 
             </defs>
             {/* v */}
-            <path
-              d={V_PATH}
-              fillRule="evenodd"
-              fill="white"
-              filter="url(#letterGlow)"
-              style={{ opacity: 0, animation: "letterIn 0.5s 0.3s ease forwards" }}
-            />
+            <g
+              onMouseEnter={() => { setBumpedLetter('v'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
+              onMouseLeave={() => setCursorHover(false)}
+              style={{ transform: bumpedLetter === 'v' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '50px 93px', transition: bumpedLetter === 'v' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+            >
+              <path
+                d={V_PATH}
+                fillRule="evenodd"
+                fill="white"
+                filter="url(#letterGlow)"
+                style={{ opacity: 0, animation: "letterIn 0.5s 0.3s ease forwards" }}
+              />
+            </g>
             {/* o1 - outer shape with mask for transparent moving hole */}
-            <g filter="url(#letterGlow)" style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards" }}>
+            <g
+              filter="url(#letterGlow)"
+              onMouseEnter={() => { setBumpedLetter('o1'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
+              onMouseLeave={() => setCursorHover(false)}
+              style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards", transform: bumpedLetter === 'o1' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '120px 93px', transition: bumpedLetter === 'o1' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+            >
               <path
                 d={O1_OUTER}
                 fill="white"
@@ -338,7 +421,12 @@ export default function Home() {
               />
             </g>
             {/* o2 - outer shape with mask for transparent moving hole */}
-            <g filter="url(#letterGlow)" style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards" }}>
+            <g
+              filter="url(#letterGlow)"
+              onMouseEnter={() => { setBumpedLetter('o2'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
+              onMouseLeave={() => setCursorHover(false)}
+              style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards", transform: bumpedLetter === 'o2' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '192px 93px', transition: bumpedLetter === 'o2' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+            >
               <path
                 d={O2_OUTER}
                 fill="white"
@@ -346,13 +434,19 @@ export default function Home() {
               />
             </g>
             {/* y */}
-            <path
-              d={Y_PATH}
-              fillRule="evenodd"
-              fill="white"
-              filter="url(#letterGlow)"
-              style={{ opacity: 0, animation: "letterIn 0.5s 1.35s ease forwards" }}
-            />
+            <g
+              onMouseEnter={() => { setBumpedLetter('y'); setTimeout(() => setBumpedLetter(null), 120); setCursorHover(true); }}
+              onMouseLeave={() => setCursorHover(false)}
+              style={{ transform: bumpedLetter === 'y' ? 'scale(0.93)' : 'scale(1)', transformOrigin: '260px 93px', transition: bumpedLetter === 'y' ? 'transform 0.1s ease-in' : 'transform 0.5s ease-out', cursor: isMobileRef.current ? 'auto' : 'none' }}
+            >
+              <path
+                d={Y_PATH}
+                fillRule="evenodd"
+                fill="white"
+                filter="url(#letterGlow)"
+                style={{ opacity: 0, animation: "letterIn 0.5s 1.35s ease forwards" }}
+              />
+            </g>
           </svg>
           {/* Underline */}
           <div style={{ marginTop:6, height:2, background:`linear-gradient(to right, transparent, ${GREEN}, ${CYAN}, transparent)`, borderRadius:2, animation:"underlineGlow 8s ease-in-out infinite", opacity:0.22 }} />
