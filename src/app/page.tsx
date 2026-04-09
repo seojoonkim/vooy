@@ -100,11 +100,14 @@ export default function Home() {
     const scheduleBlink = () => {
       const delay = 4000 + Math.random() * 3000; // 4-7s
       blinkTimeout = setTimeout(() => {
-        setBlinkScale(0.05);
+        setBlinkScale(0.3);
         setTimeout(() => {
-          setBlinkScale(1);
-          scheduleBlink();
-        }, 300);
+          setBlinkScale(0.6);
+          setTimeout(() => {
+            setBlinkScale(1);
+            scheduleBlink();
+          }, 300);
+        }, 250);
       }, delay);
     };
     scheduleBlink();
@@ -357,11 +360,11 @@ export default function Home() {
               {/* Masks for transparent holes that move with eye offset + blink */}
               <mask id="o1mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="120.38 93.55" />
+                <path d={O1_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="120.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
               </mask>
               <mask id="o2mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="192.38 93.55" />
+                <path d={O2_INNER} fill="black" transform={`translate(${eyeOffset.x * (eyeBumped ? 1.5 : 1)}, ${eyeOffset.y * (eyeBumped ? 1.5 : 1)}) scale(1,${blinkScale})`} transform-origin="192.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
               </mask>
 
             </defs>
