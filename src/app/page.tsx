@@ -103,7 +103,7 @@ export default function Home() {
         setTimeout(() => {
           setBlinkScale(1);
           scheduleBlink();
-        }, 150);
+        }, 300);
       }, delay);
     };
     scheduleBlink();
