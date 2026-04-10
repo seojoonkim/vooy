@@ -59,6 +59,8 @@ export default function Home() {
   const isMobileRef = useRef(false);
   const o1InnerRef = useRef<SVGPathElement>(null);
   const o2InnerRef = useRef<SVGPathElement>(null);
+  const blinkScaleRef = useRef(1);
+  const eyeBumpedRef = useRef(false);
 
   // Typewriter effect for command line
   const CMD = "initialize --mode=agentic --level=autonomous";
@@ -101,11 +103,11 @@ export default function Home() {
     const scheduleBlink = () => {
       const delay = 4000 + Math.random() * 3000; // 4-7s
       blinkTimeout = setTimeout(() => {
-        setBlinkScale(0.3);
+        setBlinkScale(0.3); blinkScaleRef.current = 0.3;
         setTimeout(() => {
-          setBlinkScale(0.6);
+          setBlinkScale(0.6); blinkScaleRef.current = 0.6;
           setTimeout(() => {
-            setBlinkScale(1);
+            setBlinkScale(1); blinkScaleRef.current = 1;
             scheduleBlink();
           }, 300);
         }, 250);
@@ -116,15 +118,10 @@ export default function Home() {
   }, [allLit]);
 
 
-  // Sync blink + bump to DOM when React state changes
+  // Sync bump ref
   useEffect(() => {
-    const bumpMul = eyeBumped ? 1.5 : 1;
-    const off = eyeOffsetRef.current;
-    const tx1 = o1InnerRef.current;
-    const tx2 = o2InnerRef.current;
-    if (tx1) tx1.setAttribute('transform', `translate(${off.x * bumpMul}, ${off.y * bumpMul}) scale(1,${blinkScale})`);
-    if (tx2) tx2.setAttribute('transform', `translate(${off.x * bumpMul}, ${off.y * bumpMul}) scale(1,${blinkScale})`);
-  }, [blinkScale, eyeBumped]);
+    eyeBumpedRef.current = eyeBumped;
+  }, [eyeBumped]);
 
   // Parallax
   useEffect(() => {
@@ -249,11 +246,12 @@ export default function Home() {
         eyeOffsetRef.current = next;
 
         // Direct DOM update — no React re-render
-        const bumpMul = eyeBumped ? 1.5 : 1;
+        const bumpMul = eyeBumpedRef.current ? 1.5 : 1;
+        const bs = blinkScaleRef.current;
         const tx1 = o1InnerRef.current;
         const tx2 = o2InnerRef.current;
-        if (tx1) tx1.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${blinkScale})`);
-        if (tx2) tx2.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${blinkScale})`);
+        if (tx1) tx1.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${bs})`);
+        if (tx2) tx2.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${bs})`);
       }
 
       rafId = requestAnimationFrame(animate);
