@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const GREEN = "#00d4ff";
 const CYAN = "#00e5ff";
@@ -65,8 +65,14 @@ export default function Home() {
   const o1InnerRef = useRef<SVGPathElement>(null);
   const o2InnerRef = useRef<SVGPathElement>(null);
   const blinkScaleRef = useRef(1); // ref only — no state to avoid re-renders
-
   const eyeBumpedRef = useRef(false);
+
+  // Set initial opacity to 0 via ref (before paint) so React re-renders never reset it
+  useLayoutEffect(() => {
+    [vPathRef, o1PathRef, o2PathRef, yPathRef].forEach(ref => {
+      if (ref.current) ref.current.style.opacity = '0';
+    });
+  }, []);
 
   // Typewriter effect for command line
   const CMD = "initialize --mode=agentic --level=autonomous";
@@ -402,11 +408,11 @@ export default function Home() {
               {/* Masks for transparent holes that move with eye offset + blink */}
               <mask id="o1mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path ref={o1InnerRef} d={O1_INNER} fill="black" transform={`translate(0, 0) scale(1,1)`} transform-origin="120.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
+                <path ref={o1InnerRef} d={O1_INNER} fill="black" transform-origin="120.38 93.55" />
               </mask>
               <mask id="o2mask">
                 <rect x="0" y="0" width="313.1094" height="165.1953" fill="white" />
-                <path ref={o2InnerRef} d={O2_INNER} fill="black" transform={`translate(0, 0) scale(1,1)`} transform-origin="192.38 93.55" style={{ transition: 'transform 0.3s ease-out' }} />
+                <path ref={o2InnerRef} d={O2_INNER} fill="black" transform-origin="192.38 93.55" />
               </mask>
 
             </defs>
@@ -423,7 +429,7 @@ export default function Home() {
                 fillRule="evenodd"
                 fill="white"
                 filter="url(#letterGlow)"
-                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
+                style={{ transition: 'opacity 0.5s ease' }}
               />
             </g>
             {/* o1 - outer shape with mask for transparent moving hole */}
@@ -438,7 +444,7 @@ export default function Home() {
                 d={O1_OUTER}
                 fill="white"
                 mask="url(#o1mask)"
-                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
+                style={{ transition: 'opacity 0.5s ease' }}
               />
             </g>
             {/* o2 - outer shape with mask for transparent moving hole */}
@@ -453,7 +459,7 @@ export default function Home() {
                 d={O2_OUTER}
                 fill="white"
                 mask="url(#o2mask)"
-                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
+                style={{ transition: 'opacity 0.5s ease' }}
               />
             </g>
             {/* y */}
@@ -468,7 +474,7 @@ export default function Home() {
                 fillRule="evenodd"
                 fill="white"
                 filter="url(#letterGlow)"
-                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
+                style={{ transition: 'opacity 0.5s ease' }}
               />
             </g>
 
