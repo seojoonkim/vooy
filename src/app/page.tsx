@@ -119,29 +119,29 @@ export default function Home() {
     return () => { timers.forEach(t => clearTimeout(t)); clearTimeout(litTimer); };
   }, []);
 
-  // Blink animation — slow close (200ms), slower open (800ms in 3 stages)
+  // Blink animation — natural blink: 8-20s gap, one blink at a time
   useEffect(() => {
     if (!allLit) return;
     let blinkTimeout: ReturnType<typeof setTimeout>;
     const scheduleBlink = () => {
-      const delay = 8000 + Math.random() * 12000; // 8-20s
+      const delay = 8000 + Math.random() * 12000; // 8-20s between blinks
       blinkTimeout = setTimeout(() => {
-        // Close (200ms)
+        // Close
         blinkScaleRef.current = 0.05;
         setTimeout(() => {
-          // Stage 1: slight open (250ms)
+          // Slight open
           blinkScaleRef.current = 0.3;
           setTimeout(() => {
-            // Stage 2: more open (300ms)
+            // More open
             blinkScaleRef.current = 0.6;
             setTimeout(() => {
-              // Stage 3: fully open (400ms)
+              // Fully open — then schedule next blink
               blinkScaleRef.current = 1;
               scheduleBlink();
-            }, 300);
-          }, 200);
-        }, 150);
-      }, 80);
+            }, 350);
+          }, 250);
+        }, 200);
+      }, delay);
     };
     scheduleBlink();
     return () => clearTimeout(blinkTimeout);
