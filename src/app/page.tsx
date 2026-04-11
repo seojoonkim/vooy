@@ -353,7 +353,7 @@ export default function Home() {
       {/* Vignette */}
       <div style={{ position:"absolute", inset:0, pointerEvents:"none", background:"radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.8) 100%)" }} />
       {/* Center glow */}
-      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"min(700px,90vw)", height:400, borderRadius:"50%", background:`radial-gradient(ellipse, rgba(0,180,255,0.18) 0%, rgba(0,212,255,0.06) 40%, transparent 70%)`, pointerEvents:"none" }} />
+      <div style={{ position:"absolute", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:"min(500px,70vw)", height:300, borderRadius:"50%", background:`radial-gradient(ellipse, rgba(0,180,255,0.08) 0%, rgba(0,212,255,0.03) 40%, transparent 70%)`, pointerEvents:"none" }} />
 
       <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", alignItems:"center", gap:0, textAlign:"center", padding:"0 16px", width:"100%" }}>
 
@@ -382,17 +382,16 @@ export default function Home() {
               height: "auto",
               display: "block",
               filter: allLit
-                ? "drop-shadow(0 0 4px rgba(0,212,255,0.5)) drop-shadow(0 0 16px rgba(0,212,255,0.2))"
+                ? "drop-shadow(0 0 2px rgba(0,212,255,0.3)) drop-shadow(0 0 6px rgba(0,212,255,0.1))"
                 : "none",
               transition: "filter 1.2s ease",
               
             }}
           >
             <defs>
-              <filter id="letterGlow" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur in="SourceGraphic" stdDeviation="1.2" result="blur"/>
+              <filter id="letterGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="blur"/>
                 <feMerge>
-                  <feMergeNode in="blur"/>
                   <feMergeNode in="blur"/>
                   <feMergeNode in="SourceGraphic"/>
                 </feMerge>
