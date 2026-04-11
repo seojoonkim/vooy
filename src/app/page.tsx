@@ -124,7 +124,7 @@ export default function Home() {
     if (!allLit) return;
     let blinkTimeout: ReturnType<typeof setTimeout>;
     const scheduleBlink = () => {
-      const delay = 8000 + Math.random() * 12000; // 8-20s between blinks
+      const delay = 4000 + Math.random() * 1000; // 4-5s between blinks
       blinkTimeout = setTimeout(() => {
         // Close
         blinkScaleRef.current = 0.05;
