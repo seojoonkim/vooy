@@ -431,7 +431,7 @@ export default function Home() {
               filter="url(#letterGlow)"
               onMouseEnter={() => { setBumpedLetter('o1'); setEyeBumped(true); setTimeout(() => { setBumpedLetter(null); setEyeBumped(false); }, 400); }}
               
-              style={{ opacity: bumpedLetter === 'o1' ? 1 : 0, transform: bumpedLetter === 'o1' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '120px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
+              style={{ transform: bumpedLetter === 'o1' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '120px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
                 ref={o1PathRef}
@@ -446,7 +446,7 @@ export default function Home() {
               filter="url(#letterGlow)"
               onMouseEnter={() => { setBumpedLetter('o2'); setEyeBumped(true); setTimeout(() => { setBumpedLetter(null); setEyeBumped(false); }, 400); }}
               
-              style={{ opacity: bumpedLetter === 'o2' ? 1 : 0, transform: bumpedLetter === 'o2' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '192px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
+              style={{ transform: bumpedLetter === 'o2' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '192px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
                 ref={o2PathRef}
