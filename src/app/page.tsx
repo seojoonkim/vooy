@@ -105,7 +105,7 @@ export default function Home() {
     if (!allLit) return;
     let blinkTimeout: ReturnType<typeof setTimeout>;
     const scheduleBlink = () => {
-      const delay = 4000 + Math.random() * 3000; // 4-7s
+      const delay = 15000 + Math.random() * 20000; // 15-35s
       blinkTimeout = setTimeout(() => {
         // Close fast (80ms)
 
@@ -401,9 +401,7 @@ export default function Home() {
               </mask>
 
             </defs>
-            {/* Glowing eye background — soft glow behind oo, visible through mask holes */}
-            <circle cx="120.38" cy="93.55" r="22" fill={GREEN} filter="url(#innerGlow)" style={{ opacity: allLit ? 0.85 : 0, transition: 'opacity 1.2s ease' }} />
-            <circle cx="192.38" cy="93.55" r="22" fill={GREEN} filter="url(#innerGlow)" style={{ opacity: allLit ? 0.85 : 0, transition: 'opacity 1.2s ease' }} />
+
             {/* v */}
             <g
               onMouseEnter={() => { setBumpedLetter('v'); setTimeout(() => setBumpedLetter(null), 400); }}
