@@ -41,18 +41,7 @@ const O2_OUTER = "M192.37890625 127.421875Q181.71484375 127.421875 174.09765625 
 const O1_INNER = "M120.37890625 109.84375Q124.94921875 109.84375 127.556640625 105.537109375Q130.1640625 101.23046875 130.1640625 93.5546875Q130.1640625 85.8203125 127.556640625 81.66015625Q124.94921875 77.5 120.37890625 77.5Q115.75 77.5 113.11328125 81.66015625Q110.4765625 85.8203125 110.4765625 93.5546875Q110.4765625 101.23046875 113.11328125 105.537109375Q115.75 109.84375 120.37890625 109.84375Z";
 const O2_INNER = "M192.37890625 109.84375Q196.94921875 109.84375 199.55664062500003 105.537109375Q202.16406250000003 101.23046875 202.16406250000003 93.5546875Q202.16406250000003 85.8203125 199.55664062500003 81.66015625Q196.94921875 77.5 192.37890625 77.5Q187.75 77.5 185.11328125000003 81.66015625Q182.47656250000003 85.8203125 182.47656250000003 93.5546875Q182.47656250000003 101.23046875 185.11328125000003 105.537109375Q187.75 109.84375 192.37890625 109.84375Z";
 
-// U-shaped eyelid paths — top is flat, bottom is U-curve
-// When eyelidProgress=0 (open), eyelids sit above the eyes (y ~40, invisible)
-// When eyelidProgress=1 (closed), eyelids cover the eyes (y ~93, U-curve covers pupils)
-const EYELID1_PATH = "M 85 0 L 85 93.55 Q 120.38 108 155 93.55 L 155 0 Z";
-const EYELID2_PATH = "M 158 0 L 158 93.55 Q 192.38 108 227 93.55 L 227 0 Z";
-// When open (ep=0), eyelid must be ABOVE the 'oo' letters so eyes are fully visible
-// 'oo' top edge ≈ y60, eyelid U-curve lowest point ≈ y101
-// Need translateY so eyelid bottom < y55 → translateY = 55-101 = -46
-// Use -55 for extra margin so eyes are fully exposed when open
-const EYELID_OPEN_Y = -55;
-const EYELID_CLOSED_Y = 20;
-const EYELID_TRAVEL = EYELID_CLOSED_Y - EYELID_OPEN_Y; // 75
+
 
 const Y_PATH = "M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 133.046875Q246.80078125 134.5703125 250.140625 132.900390625Q253.48046875 131.23046875 252.42578125 128.18359375L251.78125 126.30859375L227.52343750 60.7421875H252.25L260.74609375 90.625Q261.91796875 94.78515625 262.708984375 98.974609375Q263.5 103.1640625 264.203125 107.6171875Q265.19921875 103.10546875 266.283203125 98.916015625Q267.3671875 94.7265625 268.65625 90.625L278.03125 60.7421875H302.40625L275.39453125 132.2265625Q273.40234375 137.55859375 270.00390625 141.865234375Q266.60546875 146.171875 261.185546875 148.69140625Q255.765625 151.2109375 247.50390625 151.2109375Q243.46093750 151.2109375 239.53515625 150.625Q235.609375 150.0390625 232.85546875 148.984375Z";
 
@@ -62,7 +51,7 @@ export default function Home() {
   const [typed, setTyped] = useState("");
   const [uptime, setUptime] = useState("00:00:00");
   const [blinkScale, setBlinkScale] = useState(1);
-  const [eyelidProgress, setEyelidProgress] = useState(0); // 0=open, 1=closed
+
   const [bumpedLetter, setBumpedLetter] = useState<string | null>(null);
   const [eyeBumped, setEyeBumped] = useState(false);
   const mousePos = useRef({ x: 0, y: 0 });
@@ -74,9 +63,7 @@ export default function Home() {
   const o1InnerRef = useRef<SVGPathElement>(null);
   const o2InnerRef = useRef<SVGPathElement>(null);
   const blinkScaleRef = useRef(1);
-  const eyelidProgressRef = useRef(0);
-  const eyelid1Ref = useRef<SVGPathElement>(null);
-  const eyelid2Ref = useRef<SVGPathElement>(null);
+
   const eyeBumpedRef = useRef(false);
 
   // Typewriter effect for command line
@@ -113,7 +100,7 @@ export default function Home() {
     return () => clearTimeout(t);
   }, []);
 
-  // Blink animation — fast close (80ms), slow open (650ms in 3 stages), U-shaped eyelid
+  // Blink animation — fast close (80ms), slow open (650ms in 3 stages)
   useEffect(() => {
     if (!allLit) return;
     let blinkTimeout: ReturnType<typeof setTimeout>;
@@ -121,19 +108,19 @@ export default function Home() {
       const delay = 4000 + Math.random() * 3000; // 4-7s
       blinkTimeout = setTimeout(() => {
         // Close fast (80ms)
-        setEyelidProgress(1); eyelidProgressRef.current = 1;
+
         setBlinkScale(0.05); blinkScaleRef.current = 0.05;
         setTimeout(() => {
           // Stage 1: slight open (150ms)
-          setEyelidProgress(0.7); eyelidProgressRef.current = 0.7;
+
           setBlinkScale(0.3); blinkScaleRef.current = 0.3;
           setTimeout(() => {
             // Stage 2: more open (200ms)
-            setEyelidProgress(0.4); eyelidProgressRef.current = 0.4;
+
             setBlinkScale(0.6); blinkScaleRef.current = 0.6;
             setTimeout(() => {
               // Stage 3: fully open (300ms)
-              setEyelidProgress(0); eyelidProgressRef.current = 0;
+
               setBlinkScale(1); blinkScaleRef.current = 1;
               scheduleBlink();
             }, 300);
@@ -276,15 +263,12 @@ export default function Home() {
         // Direct DOM update — no React re-render
         const bumpMul = eyeBumpedRef.current ? 1.5 : 1;
         const bs = blinkScaleRef.current;
-        const ep = eyelidProgressRef.current;
+
         const tx1 = o1InnerRef.current;
         const tx2 = o2InnerRef.current;
         if (tx1) tx1.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${bs})`);
         if (tx2) tx2.setAttribute('transform', `translate(${next.x * bumpMul}, ${next.y * bumpMul}) scale(1,${bs})`);
-        // Update U-shaped eyelid positions — offset so open = above eyes
-        const eyelidDrop = EYELID_OPEN_Y + ep * EYELID_TRAVEL;
-        if (eyelid1Ref.current) eyelid1Ref.current.setAttribute('transform', `translate(0, ${eyelidDrop})`);
-        if (eyelid2Ref.current) eyelid2Ref.current.setAttribute('transform', `translate(0, ${eyelidDrop})`);
+
       }
 
       rafId = requestAnimationFrame(animate);
@@ -474,21 +458,7 @@ export default function Home() {
                 style={{ opacity: 0, animation: "letterIn 0.5s 1.35s ease forwards" }}
               />
             </g>
-            {/* U-shaped eyelids — sit above eyes when open, drop down when blinking */}
-            <path
-              ref={eyelid1Ref}
-              d={EYELID1_PATH}
-              fill="#050a0d"
-              transform="translate(0, -55)"
-              style={{ transition: 'transform 0.15s ease-out' }}
-            />
-            <path
-              ref={eyelid2Ref}
-              d={EYELID2_PATH}
-              fill="#050a0d"
-              transform="translate(0, -55)"
-              style={{ transition: 'transform 0.15s ease-out' }}
-            />
+
           </svg>
           {/* Underline */}
           <div style={{ marginTop:6, height:2, background:`linear-gradient(to right, transparent, ${GREEN}, ${CYAN}, transparent)`, borderRadius:2, animation:"underlineGlow 8s ease-in-out infinite", opacity:0.22 }} />
