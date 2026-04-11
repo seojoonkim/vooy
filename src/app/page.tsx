@@ -50,8 +50,6 @@ export default function Home() {
   const [allLit, setAllLit] = useState(false);
   const [typed, setTyped] = useState("");
   const [uptime, setUptime] = useState("00:00:00");
-  const [blinkScale, setBlinkScale] = useState(1);
-
   const [bumpedLetter, setBumpedLetter] = useState<string | null>(null);
   const [eyeBumped, setEyeBumped] = useState(false);
   const mousePos = useRef({ x: 0, y: 0 });
@@ -62,7 +60,7 @@ export default function Home() {
   const isMobileRef = useRef(false);
   const o1InnerRef = useRef<SVGPathElement>(null);
   const o2InnerRef = useRef<SVGPathElement>(null);
-  const blinkScaleRef = useRef(1);
+  const blinkScaleRef = useRef(1); // ref only — no state to avoid re-renders
 
   const eyeBumpedRef = useRef(false);
 
@@ -105,23 +103,19 @@ export default function Home() {
     if (!allLit) return;
     let blinkTimeout: ReturnType<typeof setTimeout>;
     const scheduleBlink = () => {
-      const delay = 15000 + Math.random() * 20000; // 15-35s
+      const delay = 4000 + Math.random() * 3000; // 4-7s
       blinkTimeout = setTimeout(() => {
         // Close fast (80ms)
-
-        setBlinkScale(0.05); blinkScaleRef.current = 0.05;
+        blinkScaleRef.current = 0.05;
         setTimeout(() => {
           // Stage 1: slight open (150ms)
-
-          setBlinkScale(0.3); blinkScaleRef.current = 0.3;
+          blinkScaleRef.current = 0.3;
           setTimeout(() => {
             // Stage 2: more open (200ms)
-
-            setBlinkScale(0.6); blinkScaleRef.current = 0.6;
+            blinkScaleRef.current = 0.6;
             setTimeout(() => {
               // Stage 3: fully open (300ms)
-
-              setBlinkScale(1); blinkScaleRef.current = 1;
+              blinkScaleRef.current = 1;
               scheduleBlink();
             }, 300);
           }, 200);
