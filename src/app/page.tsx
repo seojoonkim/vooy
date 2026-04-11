@@ -52,6 +52,10 @@ export default function Home() {
   const [uptime, setUptime] = useState("00:00:00");
   const [bumpedLetter, setBumpedLetter] = useState<string | null>(null);
   const [eyeBumped, setEyeBumped] = useState(false);
+  const vPathRef = useRef<SVGPathElement>(null);
+  const o1PathRef = useRef<SVGPathElement>(null);
+  const o2PathRef = useRef<SVGPathElement>(null);
+  const yPathRef = useRef<SVGPathElement>(null);
   const mousePos = useRef({ x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -91,11 +95,22 @@ export default function Home() {
     return () => clearInterval(iv);
   }, []);
 
-  // Reveal completion state for post-logo glow / eye animation
+  // Reveal letters with JS-controlled opacity (no CSS animation — avoids re-render flicker)
   useEffect(() => {
-    const t = setTimeout(() => setAllLit(true), 1900);
     isMobileRef.current = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    return () => clearTimeout(t);
+    const steps = [
+      { ref: vPathRef, delay: 300 },
+      { ref: o1PathRef, delay: 650 },
+      { ref: o2PathRef, delay: 1000 },
+      { ref: yPathRef, delay: 1350 },
+    ];
+    const timers = steps.map(({ ref, delay }) =>
+      setTimeout(() => {
+        if (ref.current) ref.current.style.opacity = '1';
+      }, delay)
+    );
+    const litTimer = setTimeout(() => setAllLit(true), 1900);
+    return () => { timers.forEach(t => clearTimeout(t)); clearTimeout(litTimer); };
   }, []);
 
   // Blink animation — fast close (80ms), slow open (650ms in 3 stages)
@@ -403,11 +418,12 @@ export default function Home() {
               style={{ transform: bumpedLetter === 'v' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '50px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
+                ref={vPathRef}
                 d={V_PATH}
                 fillRule="evenodd"
                 fill="white"
                 filter="url(#letterGlow)"
-                style={{ opacity: 0, animation: "letterIn 0.5s 0.3s ease forwards" }}
+                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
               />
             </g>
             {/* o1 - outer shape with mask for transparent moving hole */}
@@ -415,12 +431,14 @@ export default function Home() {
               filter="url(#letterGlow)"
               onMouseEnter={() => { setBumpedLetter('o1'); setEyeBumped(true); setTimeout(() => { setBumpedLetter(null); setEyeBumped(false); }, 400); }}
               
-              style={{ opacity: 0, animation: "letterIn 0.5s 0.65s ease forwards", transform: bumpedLetter === 'o1' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '120px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
+              style={{ opacity: bumpedLetter === 'o1' ? 1 : 0, transform: bumpedLetter === 'o1' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '120px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
+                ref={o1PathRef}
                 d={O1_OUTER}
                 fill="white"
                 mask="url(#o1mask)"
+                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
               />
             </g>
             {/* o2 - outer shape with mask for transparent moving hole */}
@@ -428,12 +446,14 @@ export default function Home() {
               filter="url(#letterGlow)"
               onMouseEnter={() => { setBumpedLetter('o2'); setEyeBumped(true); setTimeout(() => { setBumpedLetter(null); setEyeBumped(false); }, 400); }}
               
-              style={{ opacity: 0, animation: "letterIn 0.5s 1s ease forwards", transform: bumpedLetter === 'o2' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '192px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
+              style={{ opacity: bumpedLetter === 'o2' ? 1 : 0, transform: bumpedLetter === 'o2' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '192px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
+                ref={o2PathRef}
                 d={O2_OUTER}
                 fill="white"
                 mask="url(#o2mask)"
+                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
               />
             </g>
             {/* y */}
@@ -443,11 +463,12 @@ export default function Home() {
               style={{ transform: bumpedLetter === 'y' ? 'scale(0.97)' : 'scale(1)', transformOrigin: '260px 93px', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}
             >
               <path
+                ref={yPathRef}
                 d={Y_PATH}
                 fillRule="evenodd"
                 fill="white"
                 filter="url(#letterGlow)"
-                style={{ opacity: 0, animation: "letterIn 0.5s 1.35s ease forwards" }}
+                style={{ opacity: 0, transition: 'opacity 0.5s ease' }}
               />
             </g>
 
@@ -496,10 +517,6 @@ export default function Home() {
         @keyframes blink {
           0%,100% { opacity:1; }
           50%      { opacity:0; }
-        }
-        @keyframes letterIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to { opacity: 1; transform: translateY(0); }
         }
         @keyframes breathe {
           0%,100% { opacity:1;    text-shadow:0 0 25px rgba(0,180,255,0.2),0 0 50px rgba(0,180,255,0.075); }
