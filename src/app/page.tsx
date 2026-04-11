@@ -46,11 +46,13 @@ const O2_INNER = "M192.37890625 109.84375Q196.94921875 109.84375 199.55664062500
 // When eyelidProgress=1 (closed), eyelids cover the eyes (y ~93, U-curve covers pupils)
 const EYELID1_PATH = "M 85 0 L 85 93.55 Q 120.38 108 155 93.55 L 155 0 Z";
 const EYELID2_PATH = "M 158 0 L 158 93.55 Q 192.38 108 227 93.55 L 227 0 Z";
-// When open (ep=0), eyelid must be ABOVE the 'oo' letters so eyes are visible
-// 'oo' top edge ≈ y60, U-curve bottom ≈ y108 → open translateY = 60-108 = -48
-const EYELID_OPEN_Y = -48;
+// When open (ep=0), eyelid must be ABOVE the 'oo' letters so eyes are fully visible
+// 'oo' top edge ≈ y60, eyelid U-curve lowest point ≈ y101
+// Need translateY so eyelid bottom < y55 → translateY = 55-101 = -46
+// Use -55 for extra margin so eyes are fully exposed when open
+const EYELID_OPEN_Y = -55;
 const EYELID_CLOSED_Y = 20;
-const EYELID_TRAVEL = EYELID_CLOSED_Y - EYELID_OPEN_Y; // 68
+const EYELID_TRAVEL = EYELID_CLOSED_Y - EYELID_OPEN_Y; // 75
 
 const Y_PATH = "M232.85546875 148.984375 238.01171875 132.2265625 241.05859375 133.046875Q246.80078125 134.5703125 250.140625 132.900390625Q253.48046875 131.23046875 252.42578125 128.18359375L251.78125 126.30859375L227.52343750 60.7421875H252.25L260.74609375 90.625Q261.91796875 94.78515625 262.708984375 98.974609375Q263.5 103.1640625 264.203125 107.6171875Q265.19921875 103.10546875 266.283203125 98.916015625Q267.3671875 94.7265625 268.65625 90.625L278.03125 60.7421875H302.40625L275.39453125 132.2265625Q273.40234375 137.55859375 270.00390625 141.865234375Q266.60546875 146.171875 261.185546875 148.69140625Q255.765625 151.2109375 247.50390625 151.2109375Q243.46093750 151.2109375 239.53515625 150.625Q235.609375 150.0390625 232.85546875 148.984375Z";
 
@@ -477,14 +479,14 @@ export default function Home() {
               ref={eyelid1Ref}
               d={EYELID1_PATH}
               fill="#050a0d"
-              transform="translate(0, -48)"
+              transform="translate(0, -55)"
               style={{ transition: 'transform 0.15s ease-out' }}
             />
             <path
               ref={eyelid2Ref}
               d={EYELID2_PATH}
               fill="#050a0d"
-              transform="translate(0, -48)"
+              transform="translate(0, -55)"
               style={{ transition: 'transform 0.15s ease-out' }}
             />
           </svg>
